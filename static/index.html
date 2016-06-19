@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>图书管理系统-首页</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/grayscale.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">
+                    <i class="fa fa-play-circle"></i>  <span class="light">图书</span>管理系统
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#register">注册</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#login">登陆</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 class="brand-heading">图书管理系统</h1>
+                        <p class="intro-text"><br>读书使人心明眼亮。<br> ——伏尔泰</p>
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Login Section -->
+    <section id="login" class="intro container content-section text-center">
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-4">
+            	<h2>Log In</h2>
+                <form>
+				  	<div class="form-group">
+					    <input type="text" class="form-control" id="logname" placeholder="Username">
+				  	</div>
+				  	<div class="form-group">
+					  <input type="password" class="form-control" id="logpsw" placeholder="Password">
+				  	</div>
+				  	<div class="checkbox">
+					    <label>
+					      <input id="rememberMe" type="checkbox"> Check me out
+					    </label>
+				  	</div>
+				  	<button type="button" class="login btn btn-success btn-block">sign in</button>
+				</form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Register Section -->
+    <section id="register" class="intro content-section text-center">
+        <div class="container">
+            <div class="col-lg-4 col-lg-offset-4">
+                <h2>Register</h2>
+                <form>
+				  	<div class="form-group">
+					    <input type="text" class="form-control" id="regname" placeholder="Username">
+				  	</div>
+				  	<div class="form-group">
+					    <input type="password" class="form-control" id="regpsw" placeholder="Password">
+				  	</div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="regema" placeholder="Email">
+                    </div>
+				  	<div class="form-group">
+					    <input type="password" class="form-control" id="conpsw" placeholder="ConfirmPassword">
+				  	</div>
+				  	<button type="button" class="register btn btn-success btn-block">register</button>
+				</form>
+            </div>
+        </div>
+    </section>
+    <!-- Map Section -->
+    <div id="map"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy;HuangGe-2016</p>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/grayscale.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/register.js"></script>
+</body>
+
+</html>
