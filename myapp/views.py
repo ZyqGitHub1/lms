@@ -28,44 +28,45 @@ class myError(Exception):
 
 
 def register(request):
-	# try:
-	print request.body
-	data = simplejson.loads(request.body)
-	print data
-	name = data['user']['name']
-	password = data['user']['password']
-	repassword = data['user']['repassword']
-	email = data['user']['email']
-	if (password == repassword):
-		user = User()
-		user.name = name
-		user.password = password
-		user.email = email
-		user.save()
+	try:
+		print request.body
+		data = simplejson.loads(request.body)
+		print data
+		email = data['user']['email']
+		password = data['user']['password']
+		repassword = data['user']['repassword']
+		if (password == repassword):
+			lastUser = User.objects.all().last()
+			userID = str(int(lastUser.UserID) + 1)
+			user = User()
+			user.UserID = UserID
+			user.password = password
+			user.email = email
+			user.save()
+			result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+				},
+			}
+		else:
+			raise myError('两次输入密码不同!')
+	except Exception as e:
 		result = {
-		'successful': True,
+		'successful': False,
 		'error': {
-			'id': '',
-			'msg': '',
+			'id': '1024',
+			'msg': e.args,
 			},
 		}
-	else:
-		raise myError('两次输入密码不同!')
-	# except Exception as e:
-	# 	result = {
-	# 	'successful': False,
-	# 	'error': {
-	# 		'id': '1024',
-	# 		'msg': e.args,
-	# 		},
-	# 	}
-	# finally:
-	return HttpResponse(json.dumps(result), content_type="application/json")
+	finally:
+		return HttpResponse(json.dumps(result), content_type="application/json")
 
 def login(request):
 	try:
 		data = json.loads(request.body)
-		name = data['user']['name']
+		email = data['user']['email']
 		password = data['user']['password']
 		customerUser = User()
 		customerUser = User.objects.get(name=name)
