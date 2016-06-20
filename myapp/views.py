@@ -32,12 +32,23 @@ def register(request):
 		print request.body
 		data = simplejson.loads(request.body)
 		print data
+<<<<<<< HEAD
 		password = data['user']['password']
 		repassword = data['user']['repassword']
 		email = data['user']['email']
 		if (password == repassword):
 			user = User()
 			user.name = "66666"
+=======
+		email = data['user']['email']
+		password = data['user']['password']
+		repassword = data['user']['repassword']
+		if (password == repassword):
+			lastUser = User.objects.all().last()
+			userID = str(int(lastUser.UserID) + 1)
+			user = User()
+			user.UserID = UserID
+>>>>>>> 4f0218214f321839ff825b5c6f61b54b37459b1c
 			user.password = password
 			user.email = email
 			user.save()
@@ -50,7 +61,11 @@ def register(request):
 			}
 		else:
 			raise myError('两次输入密码不同!')
+<<<<<<< HEAD
 	except Exception,e:
+=======
+	except Exception as e:
+>>>>>>> 4f0218214f321839ff825b5c6f61b54b37459b1c
 		result = {
 		'successful': False,
 		'error': {
@@ -64,7 +79,7 @@ def register(request):
 def login(request):
 	try:
 		data = json.loads(request.body)
-		name = data['user']['name']
+		email = data['user']['email']
 		password = data['user']['password']
 		customerUser = User()
 		customerUser = User.objects.get(name=name)
