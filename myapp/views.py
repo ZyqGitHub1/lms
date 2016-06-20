@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from models import User
+from models import *
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 import json
 import simplejson
 import random
+import string
 
 # Create your views here.
 def noneIfEmptyString(value):
@@ -32,14 +33,6 @@ def register(request):
 		print request.body
 		data = simplejson.loads(request.body)
 		print data
-<<<<<<< HEAD
-		password = data['user']['password']
-		repassword = data['user']['repassword']
-		email = data['user']['email']
-		if (password == repassword):
-			user = User()
-			user.name = "66666"
-=======
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
@@ -47,8 +40,7 @@ def register(request):
 			lastUser = User.objects.all().last()
 			userID = str(int(lastUser.UserID) + 1)
 			user = User()
-			user.UserID = UserID
->>>>>>> 4f0218214f321839ff825b5c6f61b54b37459b1c
+			user.UserID = userID
 			user.password = password
 			user.email = email
 			user.save()
@@ -61,11 +53,8 @@ def register(request):
 			}
 		else:
 			raise myError('两次输入密码不同!')
-<<<<<<< HEAD
+
 	except Exception,e:
-=======
-	except Exception as e:
->>>>>>> 4f0218214f321839ff825b5c6f61b54b37459b1c
 		result = {
 		'successful': False,
 		'error': {
@@ -82,7 +71,7 @@ def login(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		customerUser = User()
-		customerUser = User.objects.get(name=name)
+		customerUser = User.objects.get(email=email)
 		if(password == customerUser.password):
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
@@ -90,12 +79,12 @@ def login(request):
 				token.delete()
 		else:
 			raise myError('登录名或密码错误!')
-		customerToken = ''.join(random.sample(ascii_letters + string.digits, 30))
+		customerToken = ''.join(random.sample(string.ascii_letters + string.digits, 30))
 		token = Token()
 		token.token = customerToken
 		token.user = customerUser
 		token.expire = '-1'
-		tuken.save()
+		token.save()
 		result = {
 			'data': {
 				'token': customerToken,
