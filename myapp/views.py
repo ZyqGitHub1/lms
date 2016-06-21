@@ -36,6 +36,9 @@ def register(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
+		existUser = User.objects.get(email=email)
+			if existUser:
+				raise myError('该邮箱已被注册!')
 		if (password == repassword):
 			lastUser = User.objects.all().last()
 			userID = str(int(lastUser.UserID) + 1)
@@ -43,6 +46,7 @@ def register(request):
 			user.password = make_password(password)
 			user.UserID = userID
 			user.email = email
+			user.RoleName = '读者'
 			user.save()
 			result = {
 			'successful': True,
@@ -51,15 +55,12 @@ def register(request):
 				'msg': '',
 				},
 			}
-		else:
-			raise myError('两次输入密码不同!')
-
 	except Exception,e:
 		result = {
 		'successful': False,
 		'error': {
 			'id': '1024',
-			'msg': e.args,
+			'msg': e.value,
 			},
 		}
 	finally:
@@ -96,7 +97,7 @@ def login(request):
 				'msg': '',
 			},
 		}
-	except myError as e:
+	except myError, e:
 		result = {
 			'successful': False,
 			'error': {
@@ -134,7 +135,7 @@ def logout(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.args
+				'msg': e.value
 			}
 		}
 	finally:
@@ -154,7 +155,7 @@ def info(request):
 				'email': customerUser.email,
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
-				'addr': customerUser.UserAddr
+				'addr': customerUser.UserAddr,
 				'register_time': customerUser.RegisterTime,
 				'fine': customerUser.Fine,
 			},
@@ -169,7 +170,7 @@ def info(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.args
+				'msg': e.value
 			}
 		}
 	finally:
@@ -211,7 +212,7 @@ def change_info(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.args,
+				'msg': e.value,
 			}
 		}
 	finally:
@@ -250,7 +251,7 @@ def change_password(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.args,
+				'msg': e.value,
 			}
 		}
 	finally:
