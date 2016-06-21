@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
@@ -19,17 +20,16 @@ class Role(models.Model):
 	@staticmethod
 	def insert_roles():
 		roles = {
-			'Reader': (Permission.BROWSE |
+			'读者': (Permission.BROWSE |
 					   Permission.BORROW, True),
-			'Moderator': (Permission.BROWSE |
+			'协管员': (Permission.BROWSE |
 						  Permission.BORROW |
 						  Permission.READER_MANAGE |
 						  Permission.BOOK_MANAGE, False),
-			'Administer': (0xff, False),
+			'管理员': (0xff, False),
 		}
 		for r in roles:
 			role = Role.objects.filter(RoleName=r)
-			print role
 			role = Role(RoleName=r)
 			role.permissions = roles[r][0]
 			role.default = roles[r][1]
@@ -40,14 +40,15 @@ class Role(models.Model):
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
-	RoleID = models.ForeignKey(Role, default=3)
+	RoleName = models.ForeignKey(Role, to_field='RoleName')
 	email = models.EmailField(unique=True, db_index=True)
 	password = models.CharField(max_length=30)
 	UserName = models.CharField(max_length=30, null=True)
 	UserSex = models.CharField(max_length=1, null=True)
 	UserPhone = models.CharField(max_length=11, null=True)
-	UserAddr = models.CharField(max_length=254, null=True)
+	UserAddr = models.CharField(max_length=255, null=True)
 	RegisterDate = models.DateTimeField(auto_now_add=True)
+	Fine = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
