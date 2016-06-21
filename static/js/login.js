@@ -48,4 +48,3 @@ var loginVue = new Vue({
         }
     }
   }
-})
