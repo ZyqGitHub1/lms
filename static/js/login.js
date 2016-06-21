@@ -16,7 +16,6 @@ $('.login').click(function(){
     .end(function(error,response){
         if (!error && response.body.successful) {
 				alert("login Success");
-				window.location.href = "./console.html";
 			} else {
 				alert("login FAILED");
 			}
