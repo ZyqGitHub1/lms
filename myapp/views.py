@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from models import User
+from models import *
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
+from django.contrib.auth.hashers import make_password, check_password
 import json
 import simplejson
 import random
@@ -31,7 +32,6 @@ def register(request):
 	try:
 		print request.body
 		data = simplejson.loads(request.body)
-		print data
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
@@ -40,7 +40,7 @@ def register(request):
 			userID = str(int(lastUser.UserID) + 1)
 			user = User()
 			user.UserID = UserID
-			user.password = password
+			user.password = make_password(password)
 			user.email = email
 			user.save()
 			result = {
@@ -70,7 +70,7 @@ def login(request):
 		password = data['user']['password']
 		customerUser = User()
 		customerUser = User.objects.get(name=name)
-		if(password == customerUser.password):
+		if(check_password(password, customerUser.password)):
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
@@ -82,7 +82,7 @@ def login(request):
 		token.token = customerToken
 		token.user = customerUser
 		token.expire = '-1'
-		tuken.save()
+		token.save()
 		result = {
 			'data': {
 				'token': customerToken,
@@ -133,6 +133,122 @@ def logout(request):
 			'error': {
 				'id': '1024',
 				'msg': e.args
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def info(request):
+	try:
+		data = json.loads(request)
+		token = Token()
+		token = Token.objects.get(token=data['token'])
+		customerUser = User()
+		customerUser = token.user
+		result = {
+			'user': {
+				'user_name': customerUser.UserName,
+				'role_name': customerUser.role_name,
+				'email': customerUser.email,
+				'sex': customerUser.UserSex,
+				'phone': customerUser.UserPhone,
+				'addr': customerUser.UserAddr
+				'register_time': customerUser.RegisterTime,
+				'fine': customerUser.Fine,
+			},
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.args
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def change_info(request):
+	try:
+		data = json.loads(request.body)
+		user = User()
+		token = Token()
+		token = Token.objects.get(token=data['token'])
+		user = token.user
+		if 'user_name' in data['user']:
+			user.UserName = noneIfEmptyString(data['user']['user_name'])
+		if 'email' in data['user']:
+			email = data['user']['email']
+			existUser = User.objects.get(email=email)
+			if existUser:
+				raise myError('该邮箱已被注册!')
+			user.email = email
+		if 'role_name' in data['user']:
+			user.RoleName = data['user']['role_name']
+		if 'phone' in data['user']:
+			user.UserPhone = data['user']['phone']
+		if 'addr' in data['user']:
+			user.UserAddr = data['user']['addr']
+		if 'fine' in data['user']:
+			user.Fine = data['user']['fine']
+		user.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def change_password(request):
+	try:
+		data = json.loads(request.body)
+		user = User()
+		token = Token()
+		token = Token.objects.get(token=data['token'])
+		user = token.user
+		if(not check_password(data['user']['old_password'],user.password)):
+			raise myError('原密码输入错误!')
+
+		user.password = make_password(data['user']['new_password'])
+		user.save()
+
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': ''
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '3',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.args,
 			}
 		}
 	finally:

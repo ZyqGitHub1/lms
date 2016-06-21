@@ -40,7 +40,7 @@ class Role(models.Model):
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
-	RoleID = models.ForeignKey(Role, default=3)
+	RoleName = models.ForeignKey(Role, default="读者")
 	email = models.EmailField(unique=True, db_index=True)
 	password = models.CharField(max_length=30)
 	UserName = models.CharField(max_length=30, null=True)
