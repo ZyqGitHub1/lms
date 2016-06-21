@@ -42,7 +42,8 @@
                         <li><a href="changepassword.html"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                        <li>
+                            <a id='logout'><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -145,70 +146,75 @@
 	                        <div class="panel-heading">查看用户信息</div>
 			                <div class="panel-body">
 			                    <div class="col-lg-6 col-lg-offset-2">
+                                <div id="infovue">
 			                        <form class="form-horizontal">
 									    <div class="form-group">
 										    <label class="col-sm-2 control-label">姓名</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="username">
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">性别</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	 <select class="form-control" v-model="sex">
+                                                    <option>男</option>
+                                                    <option>女</option>
+                                            </select>
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">最大借阅数</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="maxbook" disabled>
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">读者类型</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="role" disabled>
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">Email</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="email">
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">Tel</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="tel">
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">住址</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="addr">
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">注册日期</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="register_time" disabled>
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 										    <label class="col-sm-2 control-label">欠款金额</label>
 										    <div class="col-sm-10">
-										      	<input type="text" class="form-control">
+										      	<input type="text" class="form-control" v-model="fine" disabled>
 										    </div>
 									  	</div>
 									  	<div class="form-group">
 									    	<div class="col-sm-offset-2 col-sm-10">
-									      		<button type="button" class="btn btn-success">保存</button>
+									      		<button type="button" class="btn btn-success" @click="dochange">保存修改</button>
 									    	</div>
 									  	</div>
 									</form>
-			                    </div>     	
-			                </div>           	                   	
-            			</div>             
+                                    </div>
+			                    </div>
+			                </div>
+            			</div>
         			</div>
 				</div>
     		</div>
@@ -223,11 +229,10 @@
     <script src="../js/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../js/sb-admin-2.js"></script>
+    <script src="../js/superagent.js"></script>
+    <script src="../js/vue.js"></script>
     <script src="../js/util.js"></script>
-    <script>
-        var storlogin = sessionStorage.getItem("login");
-        loginobj = fromJSON(storlogin);
-        console.log(loginobj);
-    </script>
+    <script src="../js/token2user.js"></script>
+    <script src="../js/userinfo.js"></script>
 </body>
 </html>

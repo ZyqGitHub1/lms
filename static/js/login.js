@@ -1,4 +1,5 @@
-var loginVue = new Vue({
+var request = window.superagent;
+var resigerVue = new Vue({
     el:"#lognvue",
     data:{
         post_data:{
@@ -16,7 +17,7 @@ var loginVue = new Vue({
             return reg.test(this.post_data.user.email);
         },
         passwordgood:function () {
-            return this.post_data.user.password!='';
+            return this.post_data.user.password != '';
         }
     },
     methods: {
@@ -25,7 +26,7 @@ var loginVue = new Vue({
             alert("邮箱格式不正确");
         }
         else if(!this.passwordgood){
-            alert("密码不能为空");
+            alert("请输入密码");
         }
         else{
             var url = '/myapp/login';
@@ -40,11 +41,13 @@ var loginVue = new Vue({
                         alert(response.body.error.msg);
                     }
                     else{
+                        console.log(response.body);
                         alert('登陆成功');
-                        sessionStorage.setItem('login', response.body  );
-                        window.location.href = "./console.html";
+                        sessionStorage.setItem('login',toJSON(response.body));
+                        window.location.href = "/static/html/system.html";
                     }
                 });
         }
     }
   }
+})

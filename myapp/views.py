@@ -36,9 +36,9 @@ def register(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
-		existUser = User.objects.get(email=email)
-			if existUser:
-				raise myError('该邮箱已被注册!')
+		existUser = User.objects.filter(email=email).first()
+		if existUser:
+			raise myError('该邮箱已被注册!')
 		if (password == repassword):
 			lastUser = User.objects.all().last()
 			userID = str(int(lastUser.UserID) + 1)
@@ -46,7 +46,6 @@ def register(request):
 			user.password = make_password(password)
 			user.UserID = userID
 			user.email = email
-			user.RoleName = '读者'
 			user.save()
 			result = {
 			'successful': True,
@@ -69,11 +68,18 @@ def register(request):
 def login(request):
 	try:
 		data = json.loads(request.body)
+		print data
 		email = data['user']['email']
+		print email
 		password = data['user']['password']
+		print password
 		customerUser = User()
-		customerUser = User.objects.get(email=email)
+		print "user"
+		customerUser = User.objects.filter(email=email).first()
+		print "email"
+		print customerUser.password
 		if(check_password(password, customerUser.password)):
+			print "hahahha"
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
@@ -135,7 +141,7 @@ def logout(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value
+				'msg': e.args
 			}
 		}
 	finally:
@@ -143,7 +149,8 @@ def logout(request):
 
 def info(request):
 	try:
-		data = json.loads(request)
+		data = json.loads(request.body)
+		print data
 		token = Token()
 		token = Token.objects.get(token=data['token'])
 		customerUser = User()
@@ -151,12 +158,12 @@ def info(request):
 		result = {
 			'user': {
 				'user_name': customerUser.UserName,
-				'role_name': customerUser.role_name,
+				'role_name': str(customerUser.RoleName),
 				'email': customerUser.email,
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
 				'addr': customerUser.UserAddr,
-				'register_time': customerUser.RegisterTime,
+				'register_time': str(customerUser.RegisterDate),
 				'fine': customerUser.Fine,
 			},
 			'successful': True,
@@ -170,11 +177,11 @@ def info(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value
+				'msg': e.args
 			}
 		}
 	finally:
-		return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(simplejson.dumps(result), content_type='application/json')
 
 def change_info(request):
 	try:
@@ -251,7 +258,7 @@ def change_password(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value,
+				'msg': e.args,
 			}
 		}
 	finally:

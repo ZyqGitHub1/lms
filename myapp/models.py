@@ -36,13 +36,15 @@ class Role(models.Model):
 			role.save()
 
 	def __unicode__(self):
-		return self.name
+		return self.RoleName
+	def __str__(self):
+		return self.RoleName
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
-	RoleName = models.ForeignKey(Role, to_field='RoleName')
+	RoleName = models.ForeignKey(Role, to_field='RoleName', default='读者')
 	email = models.EmailField(unique=True, db_index=True)
-	password = models.CharField(max_length=30)
+	password = models.CharField(max_length=255)
 	UserName = models.CharField(max_length=30, null=True)
 	UserSex = models.CharField(max_length=1, null=True)
 	UserPhone = models.CharField(max_length=11, null=True)
