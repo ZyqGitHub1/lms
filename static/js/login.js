@@ -1,25 +1,23 @@
 $('.login').click(function(){
-	var logname = $('#logname').val();
+	var logemail = $('#lognemail').val();
 	var logpsw = $('#logpsw').val();
-	var rememberMe = $('#rememberMe').is(':checked');
-	
+
 	var postData = {
-		'username': logname,
-		'password': logpsw,
-		'rememberme': rememberMe
-	}
-	
-	$.ajax({
-		type: 'POST',
-		url: '/home/login',
-		data: String.toJSON(postData),
-		dataType: 'JSON',
-		success: function(result){
-			if (result[isSuccessful]) {
-				alert("Login Success");
-			} else {
-				alert("Login FAILED");
-			}
+		'user':{
+			'email': logemail,
+			'password': logpsw,
 		}
-	})
+	}
+
+	var url = '/myapp/login';
+    request.post(url)
+    .send(postData)
+    .set('Accept', 'application/json')
+    .end(function(error,response){
+        if (!error && response.body.successful) {
+				alert("login Success");
+			} else {
+				alert("login FAILED");
+			}
+		});
 })

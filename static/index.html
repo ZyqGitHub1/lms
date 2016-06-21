@@ -77,48 +77,39 @@
             </div>
         </div>
     </header>
-    
     <!-- Login Section -->
     <section id="login" class="intro container content-section text-center">
-        <div class="row">
+        <div class="container">
             <div class="col-lg-4 col-lg-offset-4">
             	<h2>Log In</h2>
                 <form>
 				  	<div class="form-group">
-					    <input type="text" class="form-control" id="logname" placeholder="Username">
+					    <input type="text" class="form-control" id="lognemail" placeholder="email">
 				  	</div>
 				  	<div class="form-group">
 					  <input type="password" class="form-control" id="logpsw" placeholder="Password">
 				  	</div>
-				  	<div class="checkbox">
-					    <label>
-					      <input id="rememberMe" type="checkbox"> Check me out
-					    </label>
-				  	</div>
-				  	<button type="button" class="login btn btn-success btn-block">sign in</button>
+				  	<button type="button" class="login btn btn-success btn-block">login</button>
 				</form>
             </div>
         </div>
     </section>
 
     <!-- Register Section -->
-    <section id="register" class="intro content-section text-center">
+    <section id="register" class="intro container content-section text-center">
         <div class="container">
             <div class="col-lg-4 col-lg-offset-4">
                 <h2>Register</h2>
                 <form>
-				  	<div class="form-group">
-					    <input type="text" class="form-control" id="regname" placeholder="Username">
-				  	</div>
-				  	<div class="form-group">
-					    <input type="password" class="form-control" id="regpsw" placeholder="Password">
-				  	</div>
                     <div class="form-group">
                         <input type="email" class="form-control" id="regema" placeholder="Email">
                     </div>
 				  	<div class="form-group">
-					    <input type="password" class="form-control" id="conpsw" placeholder="ConfirmPassword">
+					    <input type="password" class="form-control" id="regpsw" placeholder="Password">
 				  	</div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="conpsw" placeholder="ConfirmPassword">
+                    </div>
 				  	<button type="button" class="register btn btn-success btn-block">register</button>
 				</form>
             </div>
@@ -141,6 +132,10 @@
 
     <!-- Plugin JavaScript -->
     <script src="js/jquery.easing.min.js"></script>
+
+    <!-- superagent -->
+
+    <script src="js/superagent.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>

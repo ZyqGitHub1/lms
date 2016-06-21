@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password, check_password
 import json
 import simplejson
 import random
+import string
 
 # Create your views here.
 def noneIfEmptyString(value):
@@ -39,8 +40,8 @@ def register(request):
 			lastUser = User.objects.all().last()
 			userID = str(int(lastUser.UserID) + 1)
 			user = User()
-			user.UserID = UserID
 			user.password = make_password(password)
+			user.UserID = userID
 			user.email = email
 			user.save()
 			result = {
@@ -52,7 +53,8 @@ def register(request):
 			}
 		else:
 			raise myError('两次输入密码不同!')
-	except Exception as e:
+
+	except Exception,e:
 		result = {
 		'successful': False,
 		'error': {
@@ -69,15 +71,15 @@ def login(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		customerUser = User()
-		customerUser = User.objects.get(name=name)
+		customerUser = User.objects.get(email=email)
 		if(check_password(password, customerUser.password)):
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
-				token.delete() 
+				token.delete()
 		else:
 			raise myError('登录名或密码错误!')
-		customerToken = ''.join(random.sample(ascii_letters + string.digits, 30))
+		customerToken = ''.join(random.sample(string.ascii_letters + string.digits, 30))
 		token = Token()
 		token.token = customerToken
 		token.user = customerUser
@@ -102,7 +104,7 @@ def login(request):
 				'msg': e.value
 			}
 		}
-	except Exception as e:
+	except Exception,e:
 		result = {
 			'successful': False,
 			'error': {

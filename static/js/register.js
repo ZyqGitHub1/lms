@@ -1,30 +1,24 @@
+var request = window.superagent;
 $('.register').click(function(){
-	var regname = $('#regname').val();
 	var regpsw = $('#regpsw').val();
 	var regema = $('#regema').val();
 	var conpsw = $('#conpsw').val();
-	
 	var postData = {
 		'user': {
-			'name': regname,
-			'password': regpsw,
 			'email': regema,
+			'password': regpsw,
 			'repassword': conpsw,
 		}
 	}
-	
-	$.ajax({
-		type: 'POST',
-		url: '/myapp/register',
-		data: JSON.stringify(postData),
-		contentType: "application/json",
-		dataType: 'json',
-		success: function(result){
-			if (result.successful) {
+	var url = '/myapp/register';
+    request.post(url)
+    .send(JSON.stringify(postData))
+    .set('Accept', 'application/json')
+    .end(function(error,response){
+        if (!error && response.body.successful) {
 				alert("Register Success");
 			} else {
 				alert("Register FAILED");
 			}
-		}
-	})
+		});
 })
