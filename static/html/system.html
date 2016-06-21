@@ -234,5 +234,11 @@
     <script src="../js/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../js/sb-admin-2.js"></script>
+    <script src="../js/util.js"></script>
+    <script>
+        var storlogin = sessionStorage.getItem("login");
+        loginobj = fromJSON(storlogin);
+        console.log(loginobj);
+    </script>
 </body>
 </html>
