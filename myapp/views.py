@@ -4,6 +4,7 @@ from models import *
 from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password, check_password
+from VerificationEmail import send_verificationEmail
 import json
 import simplejson
 import random
@@ -36,9 +37,9 @@ def register(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
-		existUser = User.objects.get(email=email)
-			if existUser:
-				raise myError('该邮箱已被注册!')
+		existUser = User.objects.filter(email=email).first()
+		if existUser:
+			raise myError('该邮箱已被注册!')
 		if (password == repassword):
 			lastUser = User.objects.all().last()
 			userID = str(int(lastUser.UserID) + 1)
@@ -46,8 +47,15 @@ def register(request):
 			user.password = make_password(password)
 			user.UserID = userID
 			user.email = email
-			user.RoleName = '读者'
 			user.save()
+			token = Token()
+			token.user = user
+			token.expire = -1
+			VerificationCode = token.get_verification_code()
+			token.VerificationCode = VerificationCode
+			token.CodeTime = token.get_now()
+			token.save()
+			send_verificationEmail(email, VerificationCode)
 			result = {
 			'successful': True,
 			'error': {
@@ -60,7 +68,7 @@ def register(request):
 		'successful': False,
 		'error': {
 			'id': '1024',
-			'msg': e.value,
+			'msg': e.args,
 			},
 		}
 	finally:
@@ -72,10 +80,12 @@ def login(request):
 		email = data['user']['email']
 		password = data['user']['password']
 		customerUser = User()
-		customerUser = User.objects.get(email=email)
+		customerUser = User.objects.filter(email=email).first()
+		if not customerUser:
+			raise myError("该邮箱还未注册，不能登陆!")
 		if(check_password(password, customerUser.password)):
 			token = Token()
-			token = Token.objects.filter(user=customerUser)
+			token = Token.objects.filter(user=customerUser).first()
 			if(len(token) != 0):
 				token.delete()
 		else:
@@ -110,7 +120,7 @@ def login(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.args
+				'msg': e.value
 			}
 		}
 	finally:
@@ -150,6 +160,7 @@ def info(request):
 		customerUser = token.user
 		result = {
 			'user': {
+				'user_id': customerUser.UserID,
 				'user_name': customerUser.UserName,
 				'role_name': customerUser.role_name,
 				'email': customerUser.email,
@@ -157,6 +168,7 @@ def info(request):
 				'phone': customerUser.UserPhone,
 				'addr': customerUser.UserAddr,
 				'register_time': customerUser.RegisterTime,
+				'max_borrow': customerUser.MaxBorrow,
 				'fine': customerUser.Fine,
 			},
 			'successful': True,
@@ -191,8 +203,12 @@ def change_info(request):
 			if existUser:
 				raise myError('该邮箱已被注册!')
 			user.email = email
+		if 'user_sex' in data['user']:
+			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
 			user.RoleName = data['user']['role_name']
+		if 'max_borrow' in data['user']:
+			user.MaxBorrow = data['user']['max_borrow']
 		if 'phone' in data['user']:
 			user.UserPhone = data['user']['phone']
 		if 'addr' in data['user']:
