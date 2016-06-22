@@ -204,6 +204,8 @@ def change_info(request):
 			user.UserPhone = data['user']['phone']
 		if 'addr' in data['user']:
 			user.UserAddr = data['user']['addr']
+		if 'user_sex' in data['user']:
+			user.UserSex = data['user']['user_sex']
 		if 'fine' in data['user']:
 			user.Fine = data['user']['fine']
 		user.save()
