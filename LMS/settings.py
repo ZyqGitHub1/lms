@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'BookManage',
+    'UserManage',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -109,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'UTC'
 
@@ -119,9 +121,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-EMAIL_HOST='smpt.gmail.com'
-EMAIL_HOST_USER = 'chenghao940068139@gmail.com'
-EMAIL_HOST_PASSWORD = 'chenghao'
+EMAIL_HOST='smtp.126.com'
+EMAIL_HOST_USER = 'ch940068139@126.com'
+EMAIL_HOST_PASSWORD = 'chenghao123'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 25
 

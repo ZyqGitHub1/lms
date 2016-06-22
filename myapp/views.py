@@ -2,11 +2,13 @@
 from django.shortcuts import render
 from models import *
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password, check_password
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from VerificationEmail import send_verificationEmail
+from django.core.mail import send_mail
 import json
-import simplejson
 import random
 import string
 
@@ -32,8 +34,7 @@ class myError(Exception):
 
 def register(request):
 	try:
-		print request.body
-		data = simplejson.loads(request.body)
+		data = json.loads(request.body)
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
@@ -48,14 +49,7 @@ def register(request):
 			user.UserID = userID
 			user.email = email
 			user.save()
-			token = Token()
-			token.user = user
-			token.expire = -1
-			VerificationCode = token.get_verification_code()
-			token.VerificationCode = VerificationCode
-			token.CodeTime = token.get_now()
-			token.save()
-			send_verificationEmail(email, VerificationCode)
+			send_verificationEmail(email)
 			result = {
 			'successful': True,
 			'error': {
@@ -63,6 +57,14 @@ def register(request):
 				'msg': '',
 				},
 			}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
 	except Exception,e:
 		result = {
 		'successful': False,
@@ -74,18 +76,43 @@ def register(request):
 	finally:
 		return HttpResponse(json.dumps(result), content_type="application/json")
 
+def confirm(request):
+	try:
+		confirm_msg = '该链接无效或已失效'
+		data = request.GET.get('confirm')
+		print data
+		s = Serializer('SECRET_KEY')
+		confirm = s.loads(data)
+		email = confirm['confirm']
+		print email
+		user = User()
+		user = User.objects.filter(email=email).first()
+		if user:
+			user.confirmed = True
+			user.save()
+			confirm_msg = '您的邮箱已验证成功,将为您跳转到登录页面'
+	except Exception, e:
+		print e.args
+	finally:
+		return render(request, 'trans.html',
+				{
+					'confirm_msg': confirm_msg
+				})
+
 def login(request):
 	try:
 		data = json.loads(request.body)
 		email = data['user']['email']
+		print email
 		password = data['user']['password']
+		print password
 		customerUser = User()
 		customerUser = User.objects.filter(email=email).first()
 		if not customerUser:
 			raise myError("该邮箱还未注册，不能登陆!")
 		if(check_password(password, customerUser.password)):
 			token = Token()
-			token = Token.objects.filter(user=customerUser).first()
+			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
 				token.delete()
 		else:
@@ -120,7 +147,7 @@ def login(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value
+				'msg': e.args
 			}
 		}
 	finally:
@@ -145,7 +172,7 @@ def logout(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value
+				'msg': e.args
 			}
 		}
 	finally:
@@ -153,7 +180,8 @@ def logout(request):
 
 def info(request):
 	try:
-		data = json.loads(request)
+		data = json.loads(request.body)
+		print data
 		token = Token()
 		token = Token.objects.get(token=data['token'])
 		customerUser = User()
@@ -162,13 +190,13 @@ def info(request):
 			'user': {
 				'user_id': customerUser.UserID,
 				'user_name': customerUser.UserName,
-				'role_name': customerUser.role_name,
+				'role_name': str(customerUser.RoleName),
 				'email': customerUser.email,
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
 				'addr': customerUser.UserAddr,
-				'register_time': customerUser.RegisterTime,
 				'max_borrow': customerUser.MaxBorrow,
+				'register_time': str(customerUser.RegisterDate),
 				'fine': customerUser.Fine,
 			},
 			'successful': True,
@@ -182,7 +210,7 @@ def info(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value
+				'msg': e.args
 			}
 		}
 	finally:
@@ -267,7 +295,7 @@ def change_password(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value,
+				'msg': e.args,
 			}
 		}
 	finally:

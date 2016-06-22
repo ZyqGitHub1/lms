@@ -19,6 +19,7 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/animate.css">
 
 </head>
 
@@ -82,15 +83,21 @@
         <div class="container">
             <div class="col-lg-4 col-lg-offset-4">
             	<h2>Log In</h2>
+                <div id="lognvue">
                 <form>
-				  	<div class="form-group">
-					    <input type="text" class="form-control" id="lognemail" placeholder="email">
-				  	</div>
-				  	<div class="form-group">
-					  <input type="password" class="form-control" id="logpsw" placeholder="Password">
-				  	</div>
-				  	<button type="button" class="login btn btn-success btn-block">login</button>
+				  	<div class="form-group has-feedback">
+                            <input type="email" class="form-control" id="regema" placeholder="Email" v-model="post_data.user.email">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" v-if="emailgood" style="color: rgb(0,255,0);"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" v-else style="color: rgb(255,0,0);"></span>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <input type="password" class="form-control" id="regpsw" placeholder="Password" v-model="post_data.user.password">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" v-if="passwordgood" style="color: rgb(0,255,0);"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" v-else style="color: rgb(255,0,0);"></span>
+                        </div>
+				  	<button type="button" class="login btn btn-success btn-block" v-on:click="dologin">login</button>
 				</form>
+                </div>
             </div>
         </div>
     </section>
@@ -100,18 +107,26 @@
         <div class="container">
             <div class="col-lg-4 col-lg-offset-4">
                 <h2>Register</h2>
-                <form>
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="regema" placeholder="Email">
-                    </div>
-				  	<div class="form-group">
-					    <input type="password" class="form-control" id="regpsw" placeholder="Password">
-				  	</div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="conpsw" placeholder="ConfirmPassword">
-                    </div>
-				  	<button type="button" class="register btn btn-success btn-block">register</button>
-				</form>
+                <div id="regvue">
+                    <form>
+                        <div class="form-group has-feedback">
+                            <input type="email" class="form-control" id="regema" placeholder="Email" v-model="post_data.user.email">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" v-if="emailgood" style="color: rgb(0,255,0);"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" v-else style="color: rgb(255,0,0);"></span>
+                        </div>
+				      	<div class="form-group has-feedback">
+				    	    <input type="password" class="form-control" id="regpsw" placeholder="Password" v-model="post_data.user.password">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" v-if="passwordgood" style="color: rgb(0,255,0);"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" v-else style="color: rgb(255,0,0);"></span>
+				      	</div>
+                        <div class="form-group has-feedback">
+                            <input type="password" class="form-control" id="conpsw" placeholder="ConfirmPassword" v-model="post_data.user.repassword">
+                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" v-if="repasswordgood" style="color: rgb(0,255,0);"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" v-else style="color: rgb(255,0,0);"></span>
+                        </div>
+				      	<button type="button" class="register btn btn-success btn-block" v-on:click="doregister">register</button>
+				    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -138,6 +153,8 @@
     <script src="js/superagent.js"></script>
 
     <!-- Custom Theme JavaScript -->
+    <script src="js/util.js"></script>
+    <script src="js/vue.js"></script>
     <script src="js/grayscale.js"></script>
     <script src="js/login.js"></script>
     <script src="js/register.js"></script>

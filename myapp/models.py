@@ -39,19 +39,22 @@ class Role(models.Model):
 			role.save()
 
 	def __unicode__(self):
-		return self.name
+		return self.RoleName
+	def __str__(self):
+		return self.RoleName
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
 	RoleName = models.ForeignKey(Role, to_field='RoleName', default='读者')
 	email = models.EmailField(unique=True, db_index=True)
 	password = models.CharField(max_length=255)
-	UserName = models.CharField(max_length=30, null=True)
-	MaxBorrow = models.IntegerField(default=15)
-	UserSex = models.CharField(max_length=1, null=True)
-	UserPhone = models.CharField(max_length=11, null=True)
-	UserAddr = models.CharField(max_length=255, null=True)
-	RegisterDate = models.DateTimeField(auto_now_add=True)
+	UserName = models.CharField(max_length=30, null=True, blank=True)
+	MaxBorrowNumber = models.IntegerField(default=15)
+	BorrowNumber = models.IntegerField(default=0)
+	UserSex = models.CharField(max_length=1, null=True, blank=True)
+	UserPhone = models.CharField(max_length=11, null=True, blank=True)
+	UserAddr = models.CharField(max_length=255, null=True, blank=True)
+	RegisterDate = models.DateTimeField(auto_now_add=True, blank=True)
 	Fine = models.IntegerField(default=0)
 	confirmed = models.BooleanField(default=False)
 
@@ -62,26 +65,36 @@ class Token(models.Model):
     token = models.CharField('token', max_length=50, unique=True, db_index=True)
     user = models.OneToOneField(User)
     LastTime = models.DateTimeField(auto_now=True)
-    VerificationCode = models.CharField(max_length=6, null=True)
-    CodeTime = models.CharField(max_length=30, null=True)
     expire = models.BigIntegerField('expire')
-
-    def get_verification_code(self):
- 		code_list = []
- 		for i in range(2):
-  			random_num = random.randint(0, 9)
-  			a = random.randint(65, 90)
-  			b = random.randint(97, 122)
-  			random_uppercase_letter = chr(a)
-  			random_lowercase_letter = chr(b)
-  			code_list.append(str(random_num))
-  			code_list.append(random_uppercase_letter)
-  			code_list.append(random_lowercase_letter)
- 		verification_code = ''.join(code_list)
- 		return verification_code
-
-    def get_now(self):
-    	return time.mktime(datetime.datetime.now().timetuple())
 
     def __unicode__(self):
         return self.token
+
+class Book(models.Model):
+	BookID = models.CharField(max_length=10, primary_key=True)
+	BookNo = models.CharField(max_length=11, unique=True)
+	BookName = models.CharField(max_length=30)
+	BookWriter = models.CharField(max_length=30)
+	BookPublish = models.CharField(max_length=30)
+	BookPrice = models.IntegerField()
+	BookDate = models.DateField(null=True, blank=True)
+	BookClass = models.CharField(max_length=30, null=True, blank=True)
+	BookMain = models.TextField(null=True, blank=True)
+	BookPrim = models.CharField(max_length=255, null=True, blank=True)
+	BookState = models.BooleanField(default=True)
+	BookRNo = models.CharField(max_length=30)
+
+	def __unicode__(self):
+		return self.BookID
+
+class BorrowInfo(models.Model):
+	BookID = models.OneToOneField(Book, primary_key=True)
+	ReaderID = models.OneToOneField(User)
+	BorrowTime = models.DateTimeField(auto_now_add=True)
+	BackTime = models.DateTimeField()
+
+
+class FineInfo(models.Model):
+	BookID = models.OneToOneField(Book, primary_key=True)
+	ReaderID = models.OneToOneField(User)
+	Fine = models.IntegerField()
