@@ -2,10 +2,13 @@
 from django.shortcuts import render
 from models import *
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password, check_password
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from VerificationEmail import send_verificationEmail
+from django.core.mail import send_mail
 import json
-import simplejson
 import random
 import string
 
@@ -31,8 +34,7 @@ class myError(Exception):
 
 def register(request):
 	try:
-		print request.body
-		data = simplejson.loads(request.body)
+		data = json.loads(request.body)
 		email = data['user']['email']
 		password = data['user']['password']
 		repassword = data['user']['repassword']
@@ -47,6 +49,7 @@ def register(request):
 			user.UserID = userID
 			user.email = email
 			user.save()
+			send_verificationEmail(email)
 			result = {
 			'successful': True,
 			'error': {
@@ -54,16 +57,47 @@ def register(request):
 				'msg': '',
 				},
 			}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
 	except Exception,e:
 		result = {
 		'successful': False,
 		'error': {
 			'id': '1024',
-			'msg': e.value,
+			'msg': e.args,
 			},
 		}
 	finally:
 		return HttpResponse(json.dumps(result), content_type="application/json")
+
+def confirm(request):
+	try:
+		confirm_msg = '该链接无效或已失效'
+		data = request.GET.get('confirm')
+		print data
+		s = Serializer('SECRET_KEY')
+		confirm = s.loads(data)
+		email = confirm['confirm']
+		print email
+		user = User()
+		user = User.objects.filter(email=email).first()
+		if user:
+			user.confirmed = True
+			user.save()
+			confirm_msg = '您的邮箱已验证成功,将为您跳转到登录页面'
+	except Exception, e:
+		print e.args
+	finally:
+		return render(request, 'trans.html',
+				{
+					'confirm_msg': confirm_msg
+				})
 
 def login(request):
 	try:
@@ -74,10 +108,9 @@ def login(request):
 		password = data['user']['password']
 		print password
 		customerUser = User()
-		print "user"
 		customerUser = User.objects.filter(email=email).first()
-		print "email"
-		print customerUser.password
+		if not customerUser:
+			raise myError("该邮箱还未注册，不能登陆!")
 		if(check_password(password, customerUser.password)):
 			print "hahahha"
 			token = Token()
@@ -157,12 +190,15 @@ def info(request):
 		customerUser = token.user
 		result = {
 			'user': {
+				'user_id': customerUser.UserID,
 				'user_name': customerUser.UserName,
 				'role_name': str(customerUser.RoleName),
 				'email': customerUser.email,
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
 				'addr': customerUser.UserAddr,
+				'max_borrow': customerUser.MaxBorrowNumber,
+				'borrow_number': customerUser.BorrowNumber,
 				'register_time': str(customerUser.RegisterDate),
 				'fine': customerUser.Fine,
 			},
@@ -198,8 +234,12 @@ def change_info(request):
 			if existUser:
 				raise myError('该邮箱已被注册!')
 			user.email = email
+		if 'user_sex' in data['user']:
+			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
 			user.RoleName = data['user']['role_name']
+		if 'max_borrow' in data['user']:
+			user.MaxBorrow = data['user']['max_borrow']
 		if 'phone' in data['user']:
 			user.UserPhone = data['user']['phone']
 		if 'addr' in data['user']:

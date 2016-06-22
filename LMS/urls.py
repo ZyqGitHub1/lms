@@ -25,6 +25,8 @@ urlpatterns = [
 	url(r'^$', RedirectView.as_view(url='/static/index.html')),
     url(r'^admin/', admin.site.urls),
     url(r'^myapp/', include('myapp.urls')),
+    url(r'^bookManage/', include('BookManage.urls')),
+    url(r'^userManage/', include('UserManage.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
