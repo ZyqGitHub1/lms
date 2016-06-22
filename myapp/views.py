@@ -102,6 +102,7 @@ def confirm(request):
 def login(request):
 	try:
 		data = json.loads(request.body)
+		print data
 		email = data['user']['email']
 		print email
 		password = data['user']['password']
@@ -111,6 +112,7 @@ def login(request):
 		if not customerUser:
 			raise myError("该邮箱还未注册，不能登陆!")
 		if(check_password(password, customerUser.password)):
+			print "hahahha"
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
@@ -195,7 +197,8 @@ def info(request):
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
 				'addr': customerUser.UserAddr,
-				'max_borrow': customerUser.MaxBorrow,
+				'max_borrow': customerUser.MaxBorrowNumber,
+				'borrow_number': customerUser.BorrowNumber,
 				'register_time': str(customerUser.RegisterDate),
 				'fine': customerUser.Fine,
 			},
@@ -214,7 +217,7 @@ def info(request):
 			}
 		}
 	finally:
-		return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(simplejson.dumps(result), content_type='application/json')
 
 def change_info(request):
 	try:

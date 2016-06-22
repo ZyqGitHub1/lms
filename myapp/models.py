@@ -54,7 +54,7 @@ class User(models.Model):
 	UserSex = models.CharField(max_length=1, null=True, blank=True)
 	UserPhone = models.CharField(max_length=11, null=True, blank=True)
 	UserAddr = models.CharField(max_length=255, null=True, blank=True)
-	RegisterDate = models.DateTimeField(auto_now_add=True, blank=True)
+	RegisterDate = models.DateTimeField(auto_now_add=True)
 	Fine = models.IntegerField(default=0)
 	confirmed = models.BooleanField(default=False)
 
