@@ -62,7 +62,7 @@ var request = window.superagent;
         "createdRow": function ( row, data, index ) {
             //行渲染回调,在这里可以对该行dom元素进行任何操作
             //不使用render，改用jquery文档操作呈现单元格
-            var $btnEdit = $('<a>修改</a>');
+            var $btnEdit = $('<a data-toggle="modal" data-target="#changeBookInfoModal">修改</a>');
             var $btnDel = $('<a>删除</a>');
             //$('td', row).eq(7).empty();
             $('td', row).eq(7).append($btnEdit).append("|").append($btnDel);

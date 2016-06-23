@@ -31,7 +31,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">图书管理系统</a>
+                <a class="navbar-brand" href="system.html">图书管理系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -68,55 +68,18 @@
                                 </button>
                             </span>
                             </div>
-                            <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 读者功能<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">图书查询</a>
-                                </li>
-                                <li>
-                                    <a href="#">图书借阅</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="reader.html"><i class="fa fa-bar-chart-o fa-fw"></i> 读者功能<span class="fa arrow"></span></a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> 图书管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">浏览图书</a>
-                                </li>
-                                <li>
-                                    <a href="#">添加图书</a>
-                                </li>
-                                <li>
-                                    <a href="#">删除图书</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="bookmamage.html"><i class="fa fa-wrench fa-fw"></i> 图书管理<span class="fa arrow"></span></a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> 用户管理</a>
-                            <!-- /.nav-second-level -->
+                            <a href="usermanage.html"><i class="fa fa-sitemap fa-fw"></i> 用户管理</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> 借阅管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">借阅</a>
-                                </li>
-                                <li>
-                                    <a href="#">归还</a>
-                                </li><li>
-                                    <a href="#">超期罚款</a>
-                                </li>
-                                <li>
-                                    <a href="#">遗失补偿</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="borrow.html"><i class="fa fa-files-o fa-fw"></i> 借阅管理<span class="fa arrow"></span></a>
                         </li>
                     </ul>
                 </div>
@@ -158,6 +121,50 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal -->
+			<div id="changeBookInfoModal" class="modal hide fade" data-backdrop="false">
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        <h3 id="myModalLabel">图书信息</h3>
+			    </div>
+			    <div class="modal-body">
+			        <form class="form-horizontal" id="resForm">
+			            <input type="hidden" id="objectId">
+			            <div class="control-group">
+			                <label class="control-label" for="inputName">图书编号：</label> 
+			                <input type="text" id="b_id">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputJob">图书索书号：</label> 
+			                <input type="text" id="b_index">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputNote">书名：</label>
+			                <input type="text" id="b_name">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputNote">图书类型：</label>
+			                <input type="text" id="b_class">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputNote">是否可借：</label>
+			                <input type="text" id="b_state">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputNote">图书位置：</label>
+			                <input type="text" id="b_pos">
+			            </div>
+			            <div class="control-group">
+			                <label class="control-label" for="inputNote">操作：</label>
+			                <input type="text" id="b_op">
+			            </div>
+			        </form>
+			    </div>
+			    <div class="modal-footer">
+			        <button class="btn btn-primary" id="btn_save">保存</button>
+			        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">取消</button>
+			    </div>
+			</div>
         </div>
     </div>
     <!-- /#wrapper -->
