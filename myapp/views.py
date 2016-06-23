@@ -217,7 +217,7 @@ def info(request):
 			}
 		}
 	finally:
-		return HttpResponse(simplejson.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def change_info(request):
 	try:
