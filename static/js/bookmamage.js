@@ -25,7 +25,7 @@ var request = window.superagent;
         "data":TESTDATA.BOOKMANAGE,
         "dom": 'Bfrtip',
         "buttons": [
-            'copy', 'excel', 'pdf'
+            'copy', 'excel', 'csv'
         ],
         columns: [
             {
@@ -81,6 +81,8 @@ var request = window.superagent;
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
         }
-    });
-            }
+        });
+        var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" class="btn btn-default"><span>添加</span></a>');
+        $("div.dt-buttons").append($btnadd);
+        }
         });
