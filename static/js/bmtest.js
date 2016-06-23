@@ -39,7 +39,7 @@ var $wrapper = $('#dataTable_wrapper');
             //行渲染回调,在这里可以对该行dom元素进行任何操作
             //不使用render，改用jquery文档操作呈现单元格
             var $btnEdit = $('<a data-toggle="modal" data-target="#bookModal">修改</a>');
-            var $btnDel = $('<a>删除</a>');
+            var $btnDel = $('<a data-toggle="modal" data-target="#deleteModal">删除</a>');
             //$('td', row).eq(7).empty();
             $('td', row).eq(7).append($btnEdit).append("|").append($btnDel);
         },
