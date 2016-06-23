@@ -8,6 +8,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from VerificationEmail import send_verificationEmail
 from django.core.mail import send_mail
+import datetime
 import json
 import random
 import string
@@ -48,8 +49,8 @@ def register(request):
 			user.password = make_password(password)
 			user.UserID = userID
 			user.email = email
-			user.save()
 			send_verificationEmail(email)
+			user.save()
 			result = {
 			'successful': True,
 			'error': {
@@ -78,9 +79,7 @@ def register(request):
 
 def confirm(request):
 	try:
-		confirm_msg = '该链接无效或已失效'
 		data = request.GET.get('confirm')
-		print data
 		s = Serializer('SECRET_KEY')
 		confirm = s.loads(data)
 		email = confirm['confirm']
@@ -92,12 +91,24 @@ def confirm(request):
 			user.save()
 			confirm_msg = '您的邮箱已验证成功,将为您跳转到登录页面'
 	except Exception, e:
-		print e.args
+		confirm_msg = '该链接无效或已失效,一封新的确认邮件已经发送至您的邮箱'
+		send_verificationEmail(email)
 	finally:
 		return render(request, 'trans.html',
 				{
 					'confirm_msg': confirm_msg
 				})
+
+def reconfirm(request):
+	try:
+		request.GET.get('email')
+		send_verificationEmail(email)
+		return render(request, 'trans.html',
+				{
+					'confirm_msg': '一封新的确认邮件已经发送至您的邮箱'
+				})
+	except Exception, e:
+		print e.args
 
 def login(request):
 	try:
@@ -110,15 +121,16 @@ def login(request):
 		customerUser = User()
 		customerUser = User.objects.filter(email=email).first()
 		if not customerUser:
-			raise myError("该邮箱还未注册，不能登陆!")
+			raise myError("该用户不存在")
 		if(check_password(password, customerUser.password)):
-			print "hahahha"
 			token = Token()
 			token = Token.objects.filter(user=customerUser)
 			if(len(token) != 0):
 				token.delete()
 		else:
-			raise myError('登录名或密码错误!')
+			raise myError('登录名或密码错误')
+		confirmed = customerUser.confirmed
+		RoleName = customerUser.RoleName
 		customerToken = ''.join(random.sample(string.ascii_letters + string.digits, 30))
 		token = Token()
 		token.token = customerToken
@@ -127,6 +139,8 @@ def login(request):
 		token.save()
 		result = {
 			'data': {
+				'confired': confirmed,
+				'role_name': str(RoleName),
 				'token': customerToken,
 				'expire': -1,
 			},
@@ -208,6 +222,14 @@ def info(request):
 				'msg': '',
 			}
 		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
 	except Exception, e:
 		result = {
 			'successful': False,
@@ -217,7 +239,7 @@ def info(request):
 			}
 		}
 	finally:
-		return HttpResponse(simplejson.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def change_info(request):
 	try:
@@ -234,6 +256,7 @@ def change_info(request):
 			if existUser:
 				raise myError('该邮箱已被注册!')
 			user.email = email
+			send_verificationEmail(email)
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
@@ -254,12 +277,20 @@ def change_info(request):
 				'msg': '',
 			}
 		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
 	except Exception, e:
 		result = {
 			'successful': False,
 			'error': {
 				'id': '1024',
-				'msg': e.value,
+				'msg': e.args,
 			}
 		}
 	finally:
@@ -298,6 +329,96 @@ def change_password(request):
 			'successful': False,
 			'error': {
 				'id': '1024',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def borrowNow(request):
+	try:
+		data = json.loads(request.body)
+		user = User()
+		token = Token()
+		token = Token.objects.get(token=data['token'])
+		user = token.user
+		borrowInfo = BorrowInfo()
+		borrowInfo = BorrowInfo.objects.filter(RearerID=user.UserID)
+		borrowList = []
+		for borrow in borrowInfo:
+			book = Book()
+			book = borrow.BookID
+			borrowList.append({
+				'book_id': book.BookID,
+				'book_name': book.BookName,
+				'book_writer': book.BookWriter,
+				'book_publish': book.BookPublish,
+				'book_rno': book.BookRNo,
+				'borrow_time': borrow.BorrowTime,
+				'back_time': borrow.BackTime,
+				})
+		result = {
+			'successful': True,
+			'data': borrowList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def renew(request):
+	try:
+		data = json.loads(request.body)
+		BookID = data['book_id']
+		token = Token()
+		user = User()
+		borrowInfo = BorrowInfo()
+		token = Token.objects.filter(token=data['token']).first()
+		user = token.user
+		borrowInfo = BorrowInfo.objects.filter(BookID=BookID).first()
+		if borrowInfo.RenewState:
+			raise myError('每本书只能续借一次')
+		borrowInfo.BackTime += datetime.timedelta(15)
+		borrowInfo.RenewState = True
+		borrowInfo.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1',
+				'msg': e.value
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
 				'msg': e.args,
 			}
 		}

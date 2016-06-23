@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
 from __future__ import unicode_literals
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from django.contrib.auth.hashers import make_password, check_password
+from VerificationEmail import send_verificationEmail
 from django.db import models
 import time
 import datetime
@@ -32,14 +34,16 @@ class Role(models.Model):
 			'管理员': (0xff, False),
 		}
 		for r in roles:
-			role = Role.objects.filter(RoleName=r)
-			role = Role(RoleName=r)
-			role.permissions = roles[r][0]
-			role.default = roles[r][1]
-			role.save()
+			role = Role.objects.filter(RoleName=r).first()
+			if not role:
+				role = Role(RoleName=r)
+				role.permissions = roles[r][0]
+				role.default = roles[r][1]
+				role.save()
 
 	def __unicode__(self):
 		return self.RoleName
+
 	def __str__(self):
 		return self.RoleName
 
@@ -57,6 +61,25 @@ class User(models.Model):
 	RegisterDate = models.DateTimeField(auto_now_add=True)
 	Fine = models.IntegerField(default=0)
 	confirmed = models.BooleanField(default=False)
+	TotalBorrow = models.IntegerField(default=0)
+
+	@staticmethod
+	def create_superAdmin():
+		print "email: "
+		email = raw_input()
+		print "password: "
+		password = raw_input()
+		print "repassword: "
+		repassword = raw_input()
+		if len(password) < 8 or len(password) > 30:
+			print "请输入8-30位密码"
+		elif password != repassword:
+			print "两次密码输入不同"
+		else:
+			user = User(UserID='2016000000', email=email,
+						confirmed=True, password=make_password(password))
+			user.save()
+		print "管理员创建成功"
 
 	def __unicode__(self):
 		return self.name
@@ -70,6 +93,9 @@ class Token(models.Model):
     def __unicode__(self):
         return self.token
 
+class BookClasses(models.Model):
+	ClassName = models.CharField(max_length=30)
+
 class Book(models.Model):
 	BookID = models.CharField(max_length=10, primary_key=True)
 	BookNo = models.CharField(max_length=11, unique=True)
@@ -78,7 +104,7 @@ class Book(models.Model):
 	BookPublish = models.CharField(max_length=30)
 	BookPrice = models.IntegerField()
 	BookDate = models.DateField(null=True, blank=True)
-	BookClass = models.CharField(max_length=30, null=True, blank=True)
+	BookClass = models.OneToOneField(BookClasses, null=True)
 	BookMain = models.TextField(null=True, blank=True)
 	BookPrim = models.CharField(max_length=255, null=True, blank=True)
 	BookState = models.BooleanField(default=True)
@@ -90,11 +116,21 @@ class Book(models.Model):
 class BorrowInfo(models.Model):
 	BookID = models.OneToOneField(Book, primary_key=True)
 	ReaderID = models.OneToOneField(User)
-	BorrowTime = models.DateTimeField(auto_now_add=True)
-	BackTime = models.DateTimeField()
-
+	BorrowTime = models.DateField(auto_now_add=True)
+	BackTime = models.DateField()
+	RenewState = models.BooleanField(default=False)
 
 class FineInfo(models.Model):
 	BookID = models.OneToOneField(Book, primary_key=True)
-	ReaderID = models.OneToOneField(User)
+	ReaderID = models.OneToOneField(User, related_name='fine_reader')
 	Fine = models.IntegerField()
+	PayState = models.BooleanField(default=False)
+	PayDate = models.DateField(null=True, blank=True)
+	OperateID = models.OneToOneField(User, default=None, related_name='fine_admin')
+
+class LostBook(models.Model):
+	BookID = models.OneToOneField(Book)
+	ReaderID = models.OneToOneField(User, related_name='lost_reader')
+	PayMoney = models.IntegerField()
+	OperateDate = models.DateField(auto_now_add=True)
+	OperateID = models.OneToOneField(User, default=None, related_name='lost_admin')

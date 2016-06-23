@@ -5,6 +5,10 @@ import views
 
 urlpatterns = [
     url(r'^allBook$', views.allBook),
+    url(r'^allFreeBook$', views.allFreeBook),
+    url(r'^allBorrow$', views.allBorrow),
+    url(r'^allLost$', views.allLost),
+    url(r'^allFine$', views.allFine),
     url(r'^addBook$', views.addBook),
     url(r'^deleteBook$', views.deleteBook),
     url(r'^updateBook$', views.updateBook),

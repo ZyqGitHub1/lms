@@ -4,6 +4,7 @@ from myapp.models import *
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
+import datetime
 import json
 import random
 import string
@@ -31,11 +32,10 @@ def allBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if user.RoleName != '管理员' &&
-			user.RoleName != '协管员':
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		books = Book.objects.all()
 		bookList = []
@@ -47,9 +47,9 @@ def allBook(requset):
 				'book_writer': book.BookWriter,
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
-				'book_date': noneIfEmptyString(book.BookDate),
+				'book_date': noneIfEmptyString(str(book.BookDate)),
 				'book_class': noneIfEmptyString(book.BookClass),
-				'book_main': noneIfEmptyString(book.BookMail),
+				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
 				'book_rno': book.BookRNo,
@@ -71,19 +71,177 @@ def allBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
+def allFreeBook(requset):
+	try:
+		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		books = Book.objects.filter(BookState=True)
+		bookList = []
+		for book in books:
+			bookList.append({
+				'book_id': book.BookID,
+				'book_no': book.BookNo,
+				'book_name': book.BookName,
+				'book_writer': book.BookWriter,
+				'book_publish': book.BookPublish,
+				'book_price': book.BookPrice,
+				'book_date': noneIfEmptyString(str(book.BookDate)),
+				'book_class': noneIfEmptyString(book.BookClass),
+				'book_main': noneIfEmptyString(book.BookMain),
+				'book_prim': noneIfEmptyString(book.BookPrim),
+				'book_state': book.BookState,
+				'book_rno': book.BookRNo,
+				})
+		result = {
+			'successful': True,
+			'data': bookList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def allFine(requset):
+	try:
+		data = data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		fines = FineInfo.objects.all()
+		fineList = []
+		for fine in fines:
+			fineList.append({
+				'book_id': fine.BookID,
+				'user_id': fine.ReaderID,
+				'pay_money': fine.Fine,
+				'pay_state': fine.PayState,
+				'pay_date': str(fine.PayDate),
+				'operate_id': fine.OperateID
+				})
+		result = {
+			'successful': True,
+			'data': fineList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def allLost(requset):
+	try:
+		data = data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		losts = LostBook.objects.all()
+		lostList = []
+		for lost in losts:
+			lostList.append({
+				'book_id': lost.BookID,
+				'user_id': lost.ReaderID,
+				'pay_money': lost.Fine,
+				'pay_date': str(lost.PayDate),
+				'operate_id': lost.OperateID
+				})
+		result = {
+			'successful': True,
+			'data': lostList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def allBorrow(requset):
+	try:
+		data = data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		borrows = BorrowInfo.objects.all()
+		lborrowList = []
+		for borrow in borrows:
+			borrowList.append({
+				'book_id': borrow.BookID,
+				'user_id': borrow.ReaderID,
+				'borrow_time': str(borrow.BorrowTime),
+				'back_time': str(borrow.BackTime),
+				'renew_state': borrow.RenewState,
+				})
+		result = {
+			'successful': True,
+			'data': borrowlostList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def addBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if user.RoleName != '管理员' &&
-			user.RoleName != '协管员':
-			raise myError('对不起,您没有添加图书的权限!')
+		if str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员':
+			raise myError('对不起,您没有该权限!')
 		book = Book()
 		BookID = data['book']['book_id']
 		existBook = Book()
@@ -91,31 +249,22 @@ def addBook(requset):
 		if existBook:
 			raise myError('该图书编号已存在')
 		book.BookID = BookID
-		BookNo = data['book']['book_no']
-		book.BookNo = BookNo
-		BookName = data['book']['book_name']
-		book.BookName = BookName
-		BookWriter = data['book']['book_writer']
-		book.BookWriter = BookWriter
-		BookPublish = data['book']['book_publish']
-		book.BookPublish = BookPublish
-		BookPrice = data['book']['book_price']
-		book.BookPrice = BookPrice
-		book.BookCopy = BookCopy
-		BookState = data['book']['book_state']
-		book.BookState = BookState
-		BookRNo = data['book']['book_rno']
-		book.BookRNo = BookRNo
-		if 'book_data' in data['book']:
-			book.BookDate = data['book']['book_data']
+		book.BookNo = data['book']['book_no']
+		book.BookName = data['book']['book_name']
+		book.BookWriter = data['book']['book_writer']
+		book.BookPublish = data['book']['book_publish']
+		book.BookPrice = data['book']['book_price']
+		book.BookCopy = data['book']['book_copy']
+		book.BookState = data['book']['book_state']
+		book.BookRNo = data['book']['book_rno']
+		if 'book_date' in data['book']:
+			book.BookDate = data['book']['book_date']
 		if 'book_class' in data['book']:
 			book.BookClass = data['book']['book_class']
 		if 'book_main' in data['book']:
 			book.BookMain = data['book']['book_main']
 		if 'book_prim' in data['book']:
 			book.BookPrim = data['book']['book_prim']
-		if 'book_copy' in data['book']:
-			book.BookMain = data['book']['book_copy']
 		book.save()
 		result = {
 			'successful': True,
@@ -141,18 +290,17 @@ def addBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def deleteBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if user.RoleName != '管理员' &&
-			user.RoleName != '协管员':
-			raise myError('对不起,您没有删除图书的权限!')
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		BookID = data['book']['book_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID).first()
@@ -183,18 +331,17 @@ def deleteBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def updateBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if user.RoleName != '管理员' &&
-			user.RoleName != '协管员':
-			raise myError('对不起,您没有修改图书信息的权限!')
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		book = Book()
 		book = Book.objects.filter(BookID=BookID).first()
 		if 'book_name' in data['book']:
@@ -236,11 +383,17 @@ def updateBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def borrowBook(requset):
 	try:
 		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		borrow = BorrowInfo()
 		BookID = data['borrow']['book_id']
 		ReaderID = data['borrow']['reader_id']
@@ -266,6 +419,7 @@ def borrowBook(requset):
 			raise myError('该用户借书本数已达可借本书上限值!')
 		book.BookState = False
 		user.BorrowNumber += 1
+		user.TotalBorrow += 1
 		book.save()
 		user.save()
 		borrow.save()
@@ -293,11 +447,17 @@ def borrowBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def returnBook(requset):
 	try:
 		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		BookID = BookID = data['return']['book_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID)
@@ -339,4 +499,106 @@ def returnBook(requset):
 			}
 		}
 	finally:
-		return return HttpResponse(json.dumps(result), content_type='application/json')
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def finePayment(requset):
+	try:
+		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		UserID = data['user']['user_id']
+		fineInfo = FineInfo()
+		fineInfo = FineInfo.objects.filter(ReaderID=UserID)
+		for fine in fineInfo:
+			fine.PayState = True
+			fine.PayDate = datetime.date.today()
+			fine.OperateID = user.UserID
+			fine.save()
+		user = User.objects.filter(UserID=UserID).first()
+		user.Fine = 0
+		user.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def lostFine(requset):
+	try:
+		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		BookID = data['book']['book_id']
+		book = Book()
+		book = Book.objects.filter(BookID=BookID).first()
+		if not book:
+			raise myError('该书不存在,请检查是否编号输入错误!')
+		borrowInfo = BorrowInfo()
+		borrowInfo = BorrowInfo.objects.filter(BookID=BookID).first()
+		if not borrowInfo:
+			raise myError('该书未被借出,请检查是否编号输入错误!')
+		lostBook = LostBook()
+		UserID = borrowInfo.UserID
+		lostBook.BookID = BookID
+		lostBook.ReaderID = UserID
+		lostBook.PayMoney = data['pay_money']
+		lostBook.OperateID = user.UserID
+		user = User.objects.filter(UserID=UserID).first()
+		user.BorrowNumber -=1
+		borrowInfo.delete()
+		user.save()
+		lostBook.save()
+		book.delete()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
