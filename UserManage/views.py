@@ -93,7 +93,7 @@ def addUser(request):
 			raise myError('该邮箱已被注册!')
 		user.email = email
 		if 'user_name' in data['user']:
-			user.UserName = noneIfEmptyString(data['user']['user_name'])		
+			user.UserName = noneIfEmptyString(data['user']['user_name'])
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:

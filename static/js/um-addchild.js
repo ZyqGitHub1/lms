@@ -1,0 +1,32 @@
+function format ( d ) {
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>最大借阅数量：</td>'+
+            '<td>'+d.book_writer+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>历史借阅数量：</td>'+
+            '<td>'+d.book_publish+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>联系方式：</td>'+
+            '<td>'+d.book_price+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>注册日期：</td>'+
+            '<td>'+d.book_date+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>家庭住址：</td>'+
+            '<td>'+d.book_main+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>权限：</td>'+
+            '<td>'+d.book_prim+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>验证：</td>'+
+            '<td>'+d.book_prim+'</td>'+
+        '</tr>'+
+    '</table>';
+}

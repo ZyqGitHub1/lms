@@ -76,7 +76,7 @@ class User(models.Model):
 		elif password != repassword:
 			print "两次密码输入不同"
 		else:
-			user = User(UserID='2016000000', email=email,
+			user = User(UserID='2016000000', email=email, RoleName='管理员',
 						confirmed=True, password=make_password(password))
 			user.save()
 		print "管理员创建成功"
