@@ -82,7 +82,7 @@ var request = window.superagent;
             tr.addClass('shown');
         }
         });
-        var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" class="btn btn-default"><span>添加</span></a>');
+        var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" data-toggle="modal" data-target="#addBookModal" class="btn btn-default"><span>添加</span></a>');
         $("div.dt-buttons").append($btnadd);
         }
         });

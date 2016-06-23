@@ -157,8 +157,28 @@
 					                <input type="text" id="b_pos" class="form-control">
 					            </div>
 					            <div class="control-group">
-					                <label class="control-label" for="inputNote">操作：</label>
-					                <input type="text" id="b_op" class="form-control">
+					                <label class="control-label" for="inputNote">作者：</label>
+					                <input type="text" id="b_auth" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">出版社：</label>
+					                <input type="text" id="b_addr" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">价格：</label>
+					                <input type="text" id="b_price" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">日期：</label>
+					                <input type="text" id="b_date" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">摘要：</label>
+					                <input type="text" id="b_main" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">关键字：</label>
+					                <input type="text" id="b_prim" class="form-control">
 					            </div>
 					        </form>
 	                    </div>
@@ -183,6 +203,74 @@
 	                    <div class="modal-footer">
 	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
 	                        <button type="button" class="btn btn-primary btn_save">确定</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <!-- Modal -->
+	        <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        		<h3 id="myModalLabel">图书信息</h3>
+	                    </div>
+	                    <div class="modal-body">
+	                        <form class="form-horizontal" id="resForm">
+					            <input type="hidden" id="objectId">
+					            <div class="control-group">
+					                <label class="control-label" for="inputName">图书编号：</label> 
+					                <input type="text" id="b_id" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputJob">图书索书号：</label> 
+					                <input type="text" id="b_index" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">书名：</label>
+					                <input type="text" id="b_name" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">图书类型：</label>
+					                <input type="text" id="b_class" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">是否可借：</label>
+					                <input type="text" id="b_state" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">图书位置：</label>
+					                <input type="text" id="b_pos" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">作者：</label>
+					                <input type="text" id="b_auth" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">出版社：</label>
+					                <input type="text" id="b_addr" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">价格：</label>
+					                <input type="text" id="b_price" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">日期：</label>
+					                <input type="text" id="b_date" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">摘要：</label>
+					                <input type="text" id="b_main" class="form-control">
+					            </div>
+					            <div class="control-group">
+					                <label class="control-label" for="inputNote">关键字：</label>
+					                <input type="text" id="b_prim" class="form-control">
+					            </div>
+					        </form>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
+	                        <button type="button" class="btn btn-primary btn_add">添加</button>
 	                    </div>
 	                </div>
 	            </div>
