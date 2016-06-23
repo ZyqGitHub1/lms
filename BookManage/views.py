@@ -35,12 +35,7 @@ def allBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-<<<<<<< HEAD
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
-=======
-		print str(user.RoleName)
 		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
->>>>>>> 6def15b19e6c51981599dda64886674ef914a30a
 			raise myError('对不起,您没有该权限!')
 		books = Book.objects.all()
 		bookList = []
@@ -520,7 +515,7 @@ def returnBook(requset):
 		}
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
-		
+
 def finePayment(requset):
 	try:
 		data = json.loads(requset.body)

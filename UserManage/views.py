@@ -53,6 +53,9 @@ def allUser(request):
 				'user_phone': noneIfEmptyString(user.UserPhone),
 				'user_addr': noneIfEmptyString(user.UserAddr),
 				'user_registerdate': user.RegisterDate,
+				'user_fine': user.Fine,
+				'user_totalborrow': user.TotalBorrow,
+				'user_confirmed': user.confirmed
 				})
 		result = {
 			'successful': True,
