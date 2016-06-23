@@ -86,10 +86,10 @@ def addBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (user.RoleName != '管理员' and user.RoleName != '协管员'):
+		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
 			raise myError('对不起,您没有添加图书的权限!')
 		book = Book()
 		BookID = data['book']['book_id']
@@ -108,21 +108,18 @@ def addBook(requset):
 		book.BookPublish = BookPublish
 		BookPrice = data['book']['book_price']
 		book.BookPrice = BookPrice
-		book.BookCopy = BookCopy
 		BookState = data['book']['book_state']
 		book.BookState = BookState
 		BookRNo = data['book']['book_rno']
 		book.BookRNo = BookRNo
-		if 'book_data' in data['book']:
-			book.BookDate = data['book']['book_data']
+		if 'book_date' in data['book']:
+			book.BookDate = data['book']['book_date']
 		if 'book_class' in data['book']:
 			book.BookClass = data['book']['book_class']
 		if 'book_main' in data['book']:
 			book.BookMain = data['book']['book_main']
 		if 'book_prim' in data['book']:
 			book.BookPrim = data['book']['book_prim']
-		if 'book_copy' in data['book']:
-			book.BookMain = data['book']['book_copy']
 		book.save()
 		result = {
 			'successful': True,
@@ -154,10 +151,10 @@ def deleteBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (user.RoleName != '管理员' and user.RoleName != '协管员'):
+		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
 			raise myError('对不起,您没有删除图书的权限!')
 		BookID = data['book']['book_id']
 		book = Book()
@@ -195,13 +192,13 @@ def updateBook(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (user.RoleName != '管理员' and user.RoleName != '协管员'):
+		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
 			raise myError('对不起,您没有修改图书信息的权限!')
 		book = Book()
-		book = Book.objects.filter(BookID=BookID).first()
+		book = Book.objects.filter(BookID=data['book']['book_id']).first()
 		if 'book_name' in data['book']:
 			book.BookName = data['book']['book_name']
 		if 'book_writer' in data['book']:
@@ -230,6 +227,14 @@ def updateBook(requset):
 			'error': {
 				'id': '',
 				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
 			}
 		}
 	except Exception, e:
