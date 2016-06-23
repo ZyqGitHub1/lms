@@ -29,10 +29,10 @@ var CONSTANT = {
 				},
                 autoWidth: false,	//禁用自动调整列宽
                 stripeClasses: ["odd", "even"],//为奇偶行加上样式，兼容不支持CSS伪类的场合
-                order: [],			//取消默认排序查询,否则复选框一列会出现小箭头
+                //order: [],			//取消默认排序查询,否则复选框一列会出现小箭头
                 processing: false,	//隐藏加载提示,自行处理
                 serverSide: false,	//启用服务器端分页
-                searching: true	//启用原生搜索
+                searching: true,	//启用原生搜索
 			},
             RENDER: {	//常用render可以抽取出来，如日期时间、头像等
                 ELLIPSIS: function (data, type, row, meta) {

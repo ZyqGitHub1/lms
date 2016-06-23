@@ -23,6 +23,10 @@ var request = window.superagent;
                 var _table = $table.dataTable($.extend(
         true,{},CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
         "data":TESTDATA.BOOKMANAGE,
+        "dom": 'Bfrtip',
+        "buttons": [
+            'copy', 'excel', 'pdf'
+        ],
         columns: [
             {
                 "class":          'details-control',
