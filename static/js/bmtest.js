@@ -3,6 +3,10 @@ var $wrapper = $('#dataTable_wrapper');
                 var _table = $table.dataTable($.extend(
         true,{},CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
         "data":TESTDATA.BOOKMANAGE,
+        "dom": 'Bfrtip',
+        "buttons": [
+            'copy', 'excel', 'csv'
+        ],
         columns: [
             {
                 "class":          'details-control',
@@ -57,4 +61,6 @@ var $wrapper = $('#dataTable_wrapper');
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
         }
-    });
+        });
+        var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" data-toggle="modal" data-target="#addBookModal" class="btn btn-default"><span>添加</span></a>');
+        $("div.dt-buttons").append($btnadd);
