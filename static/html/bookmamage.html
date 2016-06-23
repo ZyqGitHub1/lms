@@ -134,37 +134,55 @@
 					            <input type="hidden" id="objectId">
 					            <div class="control-group">
 					                <label class="control-label" for="inputName">图书编号：</label> 
-					                <input type="text" id="b_id">
+					                <input type="text" id="b_id" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputJob">图书索书号：</label> 
-					                <input type="text" id="b_index">
+					                <input type="text" id="b_index" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">书名：</label>
-					                <input type="text" id="b_name">
+					                <input type="text" id="b_name" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">图书类型：</label>
-					                <input type="text" id="b_class">
+					                <input type="text" id="b_class" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">是否可借：</label>
-					                <input type="text" id="b_state">
+					                <input type="text" id="b_state" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">图书位置：</label>
-					                <input type="text" id="b_pos">
+					                <input type="text" id="b_pos" class="form-control">
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">操作：</label>
-					                <input type="text" id="b_op">
+					                <input type="text" id="b_op" class="form-control">
 					            </div>
 					        </form>
 	                    </div>
 	                    <div class="modal-footer">
-	                        <button type="button" class="btn btn-primary btn_save" data-dismiss="modal">保存</button>
-	                        <button type="button" class="btn btn-danger btn_cancel">取消</button>
+	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
+	                        <button type="button" class="btn btn-primary btn_save">保存</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <!-- Modal -->
+	        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        		<h3 id="myModalLabel">删除图书</h3>
+	                    </div>
+	                    <div class="modal-body">
+	                        <h4>是否删除？</h4>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
+	                        <button type="button" class="btn btn-primary btn_save">确定</button>
 	                    </div>
 	                </div>
 	            </div>
@@ -193,7 +211,8 @@
     <script src="../js/buttons.html5.js"></script>
     <script src="../testdata/testdata.js"></script>
     <script src="../js/constant.js"></script>
-    <script src="../js/bookmamage.js"></script>
+    <!--<script src="../js/bookmamage.js"></script>-->
+    <script src="../js/bmtest.js"></script>
     <script src="../js/td-addchild.js"></script>
 </body>
 </html>

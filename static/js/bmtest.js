@@ -1,32 +1,8 @@
-var request = window.superagent;
-    var storlogin = sessionStorage.getItem("login");
-    loginobj = fromJSON(storlogin);
-    var url = '/bookManage/allBook';
-    var post_data={
-        token:loginobj.data.token
-    };
-    request.post(url)
-    .send(post_data)
-    .set('Accept', 'application/json')
-    .end(function(error,response){
-        if (error) {
-                alert("网络异常");
-            }
-            else if(!response.body.successful) {
-                alert(response.body.error.msg);
-            }
-            else{
-                console.log(response.body.data);
-                booklist = response.body.data;
-                var $wrapper = $('#dataTable_wrapper');
+var $wrapper = $('#dataTable_wrapper');
                 var $table = $('#dataTables-example');
                 var _table = $table.dataTable($.extend(
         true,{},CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
         "data":TESTDATA.BOOKMANAGE,
-        "dom": 'Bfrtip',
-        "buttons": [
-            'copy', 'excel', 'csv'
-        ],
         columns: [
             {
                 "class":          'details-control',
@@ -81,8 +57,4 @@ var request = window.superagent;
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
         }
-        });
-        var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" class="btn btn-default"><span>添加</span></a>');
-        $("div.dt-buttons").append($btnadd);
-        }
-        });
+    });
