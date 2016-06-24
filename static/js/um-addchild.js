@@ -2,31 +2,31 @@ function format ( d ) {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>最大借阅数量：</td>'+
-            '<td>'+d.book_writer+'</td>'+
+            '<td>'+d.user_maxborrow+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>历史借阅数量：</td>'+
-            '<td>'+d.book_publish+'</td>'+
+            '<td>'+d.user_totalborrow+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>联系方式：</td>'+
-            '<td>'+d.book_price+'</td>'+
+            '<td>'+d.user_phone+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>注册日期：</td>'+
-            '<td>'+d.book_date+'</td>'+
+            '<td>'+d.user_registerdate+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>家庭住址：</td>'+
-            '<td>'+d.book_main+'</td>'+
+            '<td>'+d.user_addr+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>权限：</td>'+
-            '<td>'+d.book_prim+'</td>'+
+            '<td>'+d.role_name+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>验证：</td>'+
-            '<td>'+d.book_prim+'</td>'+
+            '<td>'+d.user_confirmed+'</td>'+
         '</tr>'+
     '</table>';
 }

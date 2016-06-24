@@ -12,7 +12,7 @@ var _table = $table.dataTable($.extend(
            };
            $.ajax({
                type: "POST",
-               url: "/userManager/allUser",
+               url: "/userManage/allUser",
                contentType: 'application/json',
                cache : false,  //禁用缓存
                data: toJSON(param),    //传入已封装的参数
@@ -34,7 +34,7 @@ var _table = $table.dataTable($.extend(
                     callback(returnData);
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                   $.alert("查询失败");
+                   alert("查询失败");
                    //$wrapper.spinModal(false);
                 }
             });
@@ -82,7 +82,7 @@ var _table = $table.dataTable($.extend(
             $btnEdit.on(
                 'click',
                 function () {
-                    showedit(data);
+                    showuseredit(data);
                 }
             );
             var $btnDel = $('<a>删除</a>');
@@ -122,20 +122,22 @@ $btnadd.on(
     }
     )
 $("div.dt-buttons").append($btnadd);
-function showedit(data) {
-    $("#b_id").val(data.book_id);
-    $("#b_state").val(data.book_state);
-    $("#b_price").val(data.book_price);
-    $("#b_name").val(data.book_name);
-    $("#b_index").val(data.book_no);
-    $("#b_class").val(data.book_class);
-    $("#b_pos").val(data.book_rno);
-    $("#b_auth").val(data.book_writer);
-    $("#b_addr").val(data.book_publish);
-    $("#b_date").val(data.book_date);
-    $("#b_main").val(data.book_main);
-    $("#b_prim").val(data.book_prim);
-    $("#bookModal").modal("show");
+
+
+function showuseredit(data) {
+    $("#user_id").val(data.user_id);
+    $("#role_name").val(data.role_name);
+    $("#user_email").val(data.user_email);
+    $("#user_name").val(data.user_name);
+    $("#user_maxborrow").val(data.user_maxborrow);
+    $("#user_borrow").val(data.user_borrow);
+    $("#user_sex").val(data.user_sex);
+    $("#user_phone").val(data.user_phone);
+    $("#user_addr").val(data.user_addr);
+    $("#user_confirmed").val(data.user_confirmed);
+    $("#user_fine").val(data.user_fine);
+    $("#user_totalborrow").val(data.user_totalborrow);
+    $("#userModal").modal("show");
 }
 function showaddbook() {
     $("#addBookModal").modal("show");
@@ -158,23 +160,23 @@ function showdeletebook(data) {
     temp_book_id = data.book_id;
 
 }
-function doedit() {
-    var url = '/bookManage/updateBook';
+function douseredit() {
+    var url = '/userManage/updateUserInfo';
     var post_data={
         token:loginobj.data.token,
-        book:{
-            'book_id':$("#b_id").val(),
-            'book_no':$("#b_index").val(),
-            'book_name':$("#b_name").val(),
-            'book_writer':$("#b_auth").val(),
-            'book_publish':$("#b_addr").val(),
-            'book_price':$("#b_price").val(),
-            'book_date':$("#b_date").val(),
-            'book_class':$("#b_class").val(),
-            'book_main':$("#b_main").val(),
-            'book_prim':$("#b_prim").val(),
-            'book_state':$("#b_state").val(),
-            'book_rno':$("#b_pos").val()
+        user:{
+            'user_id': $("#user_id").val(),
+            'role_name': $("#role_name").val(),
+            'user_email': $("#user_email").val(),
+            'user_name': $("#user_name").val(),
+            'user_maxborrow': $("#user_maxborrow").val(),
+            'user_borrow': $("#user_borrow").val(),
+            'user_sex': $("#user_sex").val(),
+            'user_phone': $("#user_phone").val(),
+            'user_addr': $("#user_addr").val(),
+            'user_fine': $("#user_fine").val(),
+            'user_totalborrow': $("#user_totalborrow").val(),
+            'user_confirmed': $("#user_confirmed").val(),
         }
     };
     request.post(url)

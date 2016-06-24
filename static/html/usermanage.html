@@ -122,7 +122,7 @@
                 </div>
             </div>
             <!-- Modal -->
-            <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -133,58 +133,58 @@
                             <form class="form-horizontal" id="resForm">
                                 <input type="hidden" id="objectId">
                                 <div class="control-group">
-                                    <label class="control-label" for="inputName">图书编号：</label>
-                                    <input type="text" id="b_id" class="form-control">
+                                    <label class="control-label" for="inputName">用户编号：</label>
+                                    <input type="text" id="user_id" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputJob">图书索书号：</label>
-                                    <input type="text" id="b_index" class="form-control">
+                                    <label class="control-label" for="inputJob">权限：</label>
+                                    <input type="text" id="role_name" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">书名：</label>
-                                    <input type="text" id="b_name" class="form-control">
+                                    <label class="control-label" for="inputNote">用户email：</label>
+                                    <input type="text" id="user_email" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">图书类型：</label>
-                                    <input type="text" id="b_class" class="form-control">
+                                    <label class="control-label" for="inputNote">姓名：</label>
+                                    <input type="text" id="user_name" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">是否可借：</label>
-                                    <input type="text" id="b_state" class="form-control">
+                                    <label class="control-label" for="inputNote">最大借阅本数：</label>
+                                    <input type="text" id="user_maxborrow" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">图书位置：</label>
-                                    <input type="text" id="b_pos" class="form-control">
+                                    <label class="control-label" for="inputNote">性别：</label>
+                                    <input type="text" id="user_sex" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">作者：</label>
-                                    <input type="text" id="b_auth" class="form-control">
+                                    <label class="control-label" for="inputNote">联系方式：</label>
+                                    <input type="text" id="user_phone" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">出版社：</label>
-                                    <input type="text" id="b_addr" class="form-control">
+                                    <label class="control-label" for="inputNote">家庭住址：</label>
+                                    <input type="text" id="user_addr" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">价格：</label>
-                                    <input type="text" id="b_price" class="form-control">
+                                    <label class="control-label" for="inputNote">罚款：</label>
+                                    <input type="text" id="user_fine" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">日期：</label>
-                                    <input type="text" id="b_date" class="form-control">
+                                    <label class="control-label" for="inputNote">历史借阅本数：</label>
+                                    <input type="text" id="user_totalborrow" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">摘要：</label>
-                                    <input type="text" id="b_main" class="form-control">
+                                    <label class="control-label" for="inputNote">验证：</label>
+                                    <input type="text" id="user_confirmed" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">关键字：</label>
-                                    <input type="text" id="b_prim" class="form-control">
+                                    <label class="control-label" for="inputNote">当前借阅本数：</label>
+                                    <input type="text" id="user_borrow" class="form-control">
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn_save" onclick='doedit()'>保存</button>
+                            <button type="button" class="btn btn-primary btn_save" onclick='douseredit()'>保存</button>
                         </div>
                     </div>
                 </div>
@@ -298,7 +298,7 @@
     <script src="../js/buttons.bootstrap.js"></script>
     <script src="../js/buttons.html5.js"></script>
     <script src="../js/constant.js"></script>
-    <script src="../js/bookmamage.js"></script>
+    <script src="../js/usermanage.js"></script>
     <!-- <script src="../js/bmtest.js"></script> -->
     <script src="../js/um-addchild.js"></script>
 </body>

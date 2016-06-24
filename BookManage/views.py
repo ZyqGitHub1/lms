@@ -509,7 +509,7 @@ def returnBook(requset):
 		}
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
-		
+
 def finePayment(requset):
 	try:
 		data = json.loads(requset.body)

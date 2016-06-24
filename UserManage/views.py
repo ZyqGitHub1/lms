@@ -44,7 +44,7 @@ def allUser(request):
 		for user in users:
 			userList.append({
 				'user_id': user.UserID,
-				'role_name': user.RoleName,
+				'role_name': str(user.RoleName),
 				'user_email': user.email,
 				'user_name': user.UserName,
 				'user_maxborrow': user.MaxBorrowNumber,
@@ -52,14 +52,25 @@ def allUser(request):
 				'user_sex': noneIfEmptyString(user.UserSex),
 				'user_phone': noneIfEmptyString(user.UserPhone),
 				'user_addr': noneIfEmptyString(user.UserAddr),
-				'user_registerdate': user.RegisterDate,
+				'user_registerdate': str(user.RegisterDate),
+				'user_fine': user.Fine,
+				'user_totalborrow': user.TotalBorrow,
+				'user_confirmed': user.confirmed
 				})
 		result = {
 			'successful': True,
-			'data': bookList,
+			'data': userList,
 			'error': {
 				'id': '',
 				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.value,
 			}
 		}
 	except Exception, e:
@@ -157,15 +168,16 @@ def updateUserInfo(request):
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
+			print data['user']['role_name']
 			user.RoleName = data['user']['role_name']
 		if 'max_borrow' in data['user']:
-			user.MaxBorrow = data['user']['max_borrow']
+			user.MaxBorrow = data['user']['user_maxborrow']
 		if 'phone' in data['user']:
-			user.UserPhone = data['user']['phone']
+			user.UserPhone = data['user']['user_phone']
 		if 'addr' in data['user']:
-			user.UserAddr = data['user']['addr']
+			user.UserAddr = data['user']['user_addr']
 		if 'fine' in data['user']:
-			user.Fine = data['user']['fine']
+			user.Fine = data['user']['user_fine']
 		if 'total_borrow' in data['user']:
 			user.TotalBorrow = data['user']['total_borrow']
 		user.save()
@@ -192,6 +204,8 @@ def updateUserInfo(request):
 				'msg': e.args,
 			}
 		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 def deleteUser(request):
