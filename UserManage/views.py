@@ -86,13 +86,14 @@ def addUser(request):
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		user = User()
-		UserID = data['user']['user_id']
+		lastUser = User.objects.all().last()
+		UserID = str(int(lastUser.UserID) + 1)
 		user.UserID = UserID
 		role = Role.objects.filter(RoleName=data['user']['role_name']).first()
 		user.role = role
 		user.password = make_password(data['user']['new_password'])
 		email = data['user']['email']
-		existUser = User.objects.get(email=email)
+		existUser = User.objects.filter(email=email).first()
 		if existUser:
 			raise myError('该邮箱已被注册!')
 		user.email = email
@@ -154,7 +155,7 @@ def updateUserInfo(request):
 			user.password = make_password(data['user']['new_password'])
 		if 'email' in data['user']:
 			email = data['user']['email']
-			existUser = User.objects.get(email=email)
+			existUser = User.objects.filter(email=email).first()
 			if existUser:
 				raise myError('该邮箱已被注册!')
 			user.email = email

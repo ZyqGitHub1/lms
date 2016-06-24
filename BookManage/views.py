@@ -632,3 +632,89 @@ def lostFine(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
+class allBookClasses(requset):
+	try:
+		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		classList = []
+		bookClasses = BookClasses.objects.all()
+		for bookClass in BookClasses:
+			classList.append({
+				'book_class': bookClass.ClassName
+				})
+		result = {
+			'successful': True,
+			'data': classList
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+		
+def addBookClasses(requset):
+	try:
+		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		ClassName = data['book']['book_class']
+		existClass = BookClasses.objects.filter(ClassName=ClassName).first()
+		if existClass:
+			raise myError('该图书类别已存在!')
+		booClass = BookClasses()
+		bookClass.ClassName = ClassName
+		bookClass.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def deleteBookClass(requset):
+	
