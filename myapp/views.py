@@ -130,7 +130,7 @@ def login(request):
 		else:
 			raise myError('登录名或密码错误')
 		confirmed = customerUser.confirmed
-		RoleName = customerUser.RoleName
+		RoleName = customerUser.role.RoleName
 		customerToken = ''.join(random.sample(string.ascii_letters + string.digits, 30))
 		token = Token()
 		token.token = customerToken
@@ -140,7 +140,7 @@ def login(request):
 		result = {
 			'data': {
 				'confired': confirmed,
-				'role_name': str(RoleName),
+				'role_name': RoleName,
 				'token': customerToken,
 				'expire': -1,
 			},
@@ -206,7 +206,7 @@ def info(request):
 			'user': {
 				'user_id': customerUser.UserID,
 				'user_name': customerUser.UserName,
-				'role_name': str(customerUser.RoleName),
+				'role_name': customerUser.role.RoleName,
 				'email': customerUser.email,
 				'sex': customerUser.UserSex,
 				'phone': customerUser.UserPhone,
@@ -259,18 +259,12 @@ def change_info(request):
 			send_verificationEmail(email)
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
-		if 'role_name' in data['user']:
-			user.RoleName = data['user']['role_name']
-		if 'max_borrow' in data['user']:
-			user.MaxBorrow = data['user']['max_borrow']
 		if 'phone' in data['user']:
 			user.UserPhone = data['user']['phone']
 		if 'addr' in data['user']:
 			user.UserAddr = data['user']['addr']
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
-		if 'fine' in data['user']:
-			user.Fine = data['user']['fine']
 		user.save()
 		result = {
 			'successful': True,

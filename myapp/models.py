@@ -49,7 +49,7 @@ class Role(models.Model):
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
-	RoleName = models.ForeignKey(Role, to_field='RoleName', default='读者')
+	role = models.OneToOneField(Role, to_field='RoleName', default='读者')
 	email = models.EmailField(unique=True, db_index=True)
 	password = models.CharField(max_length=255)
 	UserName = models.CharField(max_length=30, null=True, blank=True)
@@ -98,13 +98,13 @@ class BookClasses(models.Model):
 
 class Book(models.Model):
 	BookID = models.CharField(max_length=10, primary_key=True)
-	BookNo = models.CharField(max_length=11, unique=True)
+	BookNo = models.CharField(max_length=11)
 	BookName = models.CharField(max_length=30)
 	BookWriter = models.CharField(max_length=30)
 	BookPublish = models.CharField(max_length=30)
 	BookPrice = models.IntegerField()
 	BookDate = models.DateField(null=True, blank=True)
-	BookClass = models.OneToOneField(BookClasses, null=True)
+	BookClass = models.ForeignKey(BookClasses, null=True)
 	BookMain = models.TextField(null=True, blank=True)
 	BookPrim = models.CharField(max_length=255, null=True, blank=True)
 	BookState = models.BooleanField(default=True)
@@ -114,23 +114,23 @@ class Book(models.Model):
 		return self.BookID
 
 class BorrowInfo(models.Model):
-	BookID = models.OneToOneField(Book, primary_key=True)
-	ReaderID = models.OneToOneField(User)
+	book = models.OneToOneField(Book, primary_key=True)
+	reader = models.ForeignKey(User)
 	BorrowTime = models.DateField(auto_now_add=True)
 	BackTime = models.DateField()
 	RenewState = models.BooleanField(default=False)
 
 class FineInfo(models.Model):
-	BookID = models.OneToOneField(Book, primary_key=True)
-	ReaderID = models.OneToOneField(User, related_name='fine_reader')
+	book = models.ForeignKey(Book)
+	reader = models.ForeignKey(User, related_name='fine_reader')
 	Fine = models.IntegerField()
 	PayState = models.BooleanField(default=False)
 	PayDate = models.DateField(null=True, blank=True)
-	OperateID = models.OneToOneField(User, default=None, related_name='fine_admin')
+	admin = models.ForeignKey(User, default=None, related_name='fine_admin')
 
 class LostBook(models.Model):
-	BookID = models.OneToOneField(Book)
-	ReaderID = models.OneToOneField(User, related_name='lost_reader')
+	book = models.ForeignKey(Book)
+	reader = models.ForeignKey(User, related_name='lost_reader')
 	PayMoney = models.IntegerField()
 	OperateDate = models.DateField(auto_now_add=True)
-	OperateID = models.OneToOneField(User, default=None, related_name='lost_admin')
+	admin = models.ForeignKey(User, default=None, related_name='lost_admin')
