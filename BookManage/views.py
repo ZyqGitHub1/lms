@@ -48,7 +48,7 @@ def allBook(requset):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass.ClassName),
+				'book_class': noneIfEmptyString(book.BookClass),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,

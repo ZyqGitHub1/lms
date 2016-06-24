@@ -49,7 +49,7 @@ class Role(models.Model):
 
 class User(models.Model):
 	UserID = models.CharField(max_length=10, primary_key=True)
-	role = models.OneToOneField(Role, to_field='RoleName', default='读者')
+	role = models.ForeignKey(Role, to_field='RoleName', default='读者')
 	email = models.EmailField(unique=True, db_index=True)
 	password = models.CharField(max_length=255)
 	UserName = models.CharField(max_length=30, null=True, blank=True)
@@ -76,7 +76,8 @@ class User(models.Model):
 		elif password != repassword:
 			print "两次密码输入不同"
 		else:
-			user = User(UserID='2016000000', email=email, RoleName='管理员',
+			role = Role.objects.filter(RoleName='管理员').first()
+			user = User(UserID='2016000000', email=email, role=role,
 						confirmed=True, password=make_password(password))
 			user.save()
 		print "管理员创建成功"

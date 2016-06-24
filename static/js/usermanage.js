@@ -89,7 +89,7 @@ var _table = $table.dataTable($.extend(
             $btnDel.on(
                 'click',
                 function () {
-                    showdeletebook(data);
+                    showdeleteuser(data);
                 }
             );
             console.log(data);
@@ -118,7 +118,7 @@ var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" dat
 $btnadd.on(
     'click',
     function(){
-        showaddbook();
+        showadduser();
     }
     )
 $("div.dt-buttons").append($btnadd);
@@ -139,11 +139,11 @@ function showuseredit(data) {
     $("#user_totalborrow").val(data.user_totalborrow);
     $("#userModal").modal("show");
 }
-function showaddbook() {
-    $("#addBookModal").modal("show");
+function showadduser() {
+    $("#addUserModal").modal("show");
 }
-var temp_book_id;
-function showdeletebook(data) {
+var temp_user_id;
+function showdeleteuser(data) {
     //$("#b_id").val(data.book_id);
     //$("#b_state").val(data.book_state);
     //$("#b_price").val(data.book_price);
@@ -157,7 +157,7 @@ function showdeletebook(data) {
     //$("#b_main").val(data.book_main);
     //$("#b_prim").val(data.book_prim);
     $("#deleteModal").modal("show");
-    temp_book_id = data.book_id;
+    temp_user_id = data.user_id;
 
 }
 function douseredit() {
@@ -177,6 +177,7 @@ function douseredit() {
             'user_fine': $("#user_fine").val(),
             'user_totalborrow': $("#user_totalborrow").val(),
             'user_confirmed': $("#user_confirmed").val(),
+            'new_password': $("#user_password").val(),
         }
     };
     request.post(url)
@@ -192,27 +193,28 @@ function douseredit() {
             else{
                 alert("修改成功");
                 _table.ajax.reload();
-                $("#bookModal").modal('toggle');
+                $("#userModal").modal('toggle');
             }
     })
 }
-function doeaddbook() {
-    var url = '/bookManage/addBook';
+function doadduser() {
+    var url = '/userManage/addUser';
     var post_data={
         token:loginobj.data.token,
-        book:{
-            'book_id':$("#add_b_id").val(),
-            'book_no':$("#add_b_index").val(),
-            'book_name':$("#add_b_name").val(),
-            'book_writer':$("#add_b_auth").val(),
-            'book_publish':$("#add_b_addr").val(),
-            'book_price':$("#add_b_price").val(),
-            'book_date':$("#add_b_date").val(),
-            'book_class':$("#add_b_class").val(),
-            'book_main':$("#add_b_main").val(),
-            'book_prim':$("#add_b_prim").val(),
-            'book_state':$("#add_b_state").val(),
-            'book_rno':$("#add_b_pos").val()
+        user:{
+            'user_id': $("#add_user_id").val(),
+            'role_name': $("#add_role_name").val(),
+            'user_email': $("#add_user_email").val(),
+            'user_name': $("#add_user_name").val(),
+            'user_maxborrow': $("#add_user_maxborrow").val(),
+            'user_borrow': $("#add_user_borrow").val(),
+            'user_sex': $("#add_user_sex").val(),
+            'user_phone': $("#add_user_phone").val(),
+            'user_addr': $("#add_user_addr").val(),
+            'user_fine': $("#add_user_fine").val(),
+            'user_totalborrow': $("#add_user_totalborrow").val(),
+            'user_confirmed': $("#add_user_confirmed").val(),
+            'new_password': $("#add_user_password").val(),
         }
     };
     request.post(url)
@@ -228,16 +230,16 @@ function doeaddbook() {
             else{
                 alert("添加成功");
                 _table.ajax.reload();
-                $("#addBookModal").modal('toggle');
+                $("#addUserModal").modal('toggle');
             }
     })
 }
-function dodeltetbook() {
-    var url = '/bookManage/deleteBook';
+function dodeltetuser() {
+    var url = '/userManage/deleteUser';
     var post_data={
         token:loginobj.data.token,
-        book:{
-            'book_id':temp_book_id,
+        user:{
+            'user_id':temp_user_id,
         }
     };
     request.post(url)

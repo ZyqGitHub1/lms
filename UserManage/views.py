@@ -84,11 +84,11 @@ def allUser(request):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def addUser(request):
+def addUser(requset):
 	try:
 		data = json.loads(requset.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
@@ -99,8 +99,8 @@ def addUser(request):
 		role = Role.objects.filter(RoleName=data['user']['role_name']).first()
 		user.role = role
 		user.password = make_password(data['user']['new_password'])
-		email = data['user']['email']
-		existUser = User.objects.get(email=email)
+		email = data['user']['user_email']
+		existUser = User.objects.filter(email=email).first()
 		if existUser:
 			raise myError('该邮箱已被注册!')
 		user.email = email
@@ -158,7 +158,7 @@ def updateUserInfo(request):
 		user = User.objects.filter(UserID=UserID).first()
 		if 'user_name' in data['user']:
 			user.UserName = noneIfEmptyString(data['user']['user_name'])
-		if 'user_password' in data['user']:
+		if 'new_password' in data['user']:
 			user.password = make_password(data['user']['new_password'])
 		if 'email' in data['user']:
 			email = data['user']['email']

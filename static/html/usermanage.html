@@ -134,7 +134,7 @@
                                 <input type="hidden" id="objectId">
                                 <div class="control-group">
                                     <label class="control-label" for="inputName">用户编号：</label>
-                                    <input type="text" id="user_id" class="form-control">
+                                    <input type="text" id="user_id" class="form-control" disabled>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="inputJob">权限：</label>
@@ -143,6 +143,10 @@
                                 <div class="control-group">
                                     <label class="control-label" for="inputNote">用户email：</label>
                                     <input type="text" id="user_email" class="form-control">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="user_password">密码：</label>
+                                    <input type="text" id="user_password" class="form-control">
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="inputNote">姓名：</label>
@@ -195,20 +199,20 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel">删除图书</h3>
+                            <h3 id="myModalLabel">删除用户</h3>
                         </div>
                         <div class="modal-body">
                             <h4>是否删除？</h4>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn_save" onclick='dodeltetbook()'>确定</button>
+                            <button type="button" class="btn btn-primary btn_save" onclick='dodeltetuser()'>确定</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Modal -->
-            <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -219,58 +223,62 @@
                             <form class="form-horizontal" id="resForm">
                                 <input type="hidden" id="objectId">
                                 <div class="control-group">
-                                    <label class="control-label" for="inputName">图书编号：</label>
-                                    <input type="text" id="add_b_id" class="form-control">
+                                    <label class="control-label" for="inputName">用户编号：</label>
+                                    <input type="text" id="add_user_id" class="form-control" disabled>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputJob">图书索书号：</label>
-                                    <input type="text" id="add_b_index" class="form-control">
+                                    <label class="control-label" for="inputJob">权限：</label>
+                                    <input type="text" id="add_role_name" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">书名：</label>
-                                    <input type="text" id="add_b_name" class="form-control">
+                                    <label class="control-label" for="inputNote">用户email：</label>
+                                    <input type="text" id="add_user_email" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">图书类型：</label>
-                                    <input type="text" id="add_b_class" class="form-control">
+                                    <label class="control-label" for="inputJob">密码：</label>
+                                    <input type="text" id="add_user_password" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">是否可借：</label>
-                                    <input type="text" id="add_b_state" class="form-control">
+                                    <label class="control-label" for="inputNote">姓名：</label>
+                                    <input type="text" id="add_user_name" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">图书位置：</label>
-                                    <input type="text" id="add_b_pos" class="form-control">
+                                    <label class="control-label" for="inputNote">最大借阅本数：</label>
+                                    <input type="text" id="add_user_maxborrow" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">作者：</label>
-                                    <input type="text" id="add_b_auth" class="form-control">
+                                    <label class="control-label" for="inputNote">性别：</label>
+                                    <input type="text" id="add_user_sex" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">出版社：</label>
-                                    <input type="text" id="add_b_addr" class="form-control">
+                                    <label class="control-label" for="inputNote">联系方式：</label>
+                                    <input type="text" id="add_user_phone" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">价格：</label>
-                                    <input type="text" id="add_b_price" class="form-control">
+                                    <label class="control-label" for="inputNote">家庭住址：</label>
+                                    <input type="text" id="add_user_addr" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">日期：</label>
-                                    <input type="text" id="add_b_date" class="form-control">
+                                    <label class="control-label" for="inputNote">罚款：</label>
+                                    <input type="text" id="add_user_fine" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">摘要：</label>
-                                    <input type="text" id="add_b_main" class="form-control">
+                                    <label class="control-label" for="inputNote">历史借阅本数：</label>
+                                    <input type="text" id="add_user_totalborrow" class="form-control">
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="inputNote">关键字：</label>
-                                    <input type="text" id="add_b_prim" class="form-control">
+                                    <label class="control-label" for="inputNote">验证：</label>
+                                    <input type="text" id="add_user_confirmed" class="form-control">
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="inputNote">当前借阅本数：</label>
+                                    <input type="text" id="add_user_borrow" class="form-control">
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
-                            <button type="button" class="btn btn-primary btn_add" onclick='doeaddbook()'>添加</button>
+                            <button type="button" class="btn btn-primary btn_add" onclick='doadduser()'>添加</button>
                         </div>
                     </div>
                 </div>
