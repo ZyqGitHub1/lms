@@ -52,17 +52,25 @@ def allUser(request):
 				'user_sex': noneIfEmptyString(user.UserSex),
 				'user_phone': noneIfEmptyString(user.UserPhone),
 				'user_addr': noneIfEmptyString(user.UserAddr),
-				'user_registerdate': user.RegisterDate,
+				'user_registerdate': str(user.RegisterDate),
 				'user_fine': user.Fine,
 				'user_totalborrow': user.TotalBorrow,
 				'user_confirmed': user.confirmed
 				})
 		result = {
 			'successful': True,
-			'data': bookList,
+			'data': userList,
 			'error': {
 				'id': '',
 				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.value,
 			}
 		}
 	except Exception, e:
@@ -78,9 +86,9 @@ def allUser(request):
 
 def addUser(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
-		token = Token.objects.filter(token=data['token'])
+		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
@@ -92,13 +100,13 @@ def addUser(request):
 		role = Role.objects.filter(RoleName=data['user']['role_name']).first()
 		user.role = role
 		user.password = make_password(data['user']['new_password'])
-		email = data['user']['email']
+		email = data['user']['user_email']
 		existUser = User.objects.filter(email=email).first()
 		if existUser:
 			raise myError('该邮箱已被注册!')
 		user.email = email
 		if 'user_name' in data['user']:
-			user.UserName = noneIfEmptyString(data['user']['user_name'])		
+			user.UserName = noneIfEmptyString(data['user']['user_name'])
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
@@ -151,7 +159,7 @@ def updateUserInfo(request):
 		user = User.objects.filter(UserID=UserID).first()
 		if 'user_name' in data['user']:
 			user.UserName = noneIfEmptyString(data['user']['user_name'])
-		if 'user_password' in data['user']:
+		if 'new_password' in data['user']:
 			user.password = make_password(data['user']['new_password'])
 		if 'email' in data['user']:
 			email = data['user']['email']
@@ -172,7 +180,7 @@ def updateUserInfo(request):
 		if 'addr' in data['user']:
 			user.UserAddr = data['user']['user_addr']
 		if 'fine' in data['user']:
-			user.Fine = data['user']['fine']
+			user.Fine = data['user']['user_fine']
 		if 'total_borrow' in data['user']:
 			user.TotalBorrow = data['user']['user_totalborrow']
 		user.save()
@@ -199,6 +207,8 @@ def updateUserInfo(request):
 				'msg': e.args,
 			}
 		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 def deleteUser(request):
