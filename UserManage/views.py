@@ -37,14 +37,14 @@ def allUser(request):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		users = User.objects.all()
 		userList = []
 		for user in users:
 			userList.append({
 				'user_id': user.UserID,
-				'role_name': str(user.RoleName),
+				'role_name': user.role.RoleName,
 				'user_email': user.email,
 				'user_name': user.UserName,
 				'user_maxborrow': user.MaxBorrowNumber,
@@ -91,12 +91,13 @@ def addUser(request):
 		token = Token.objects.filter(token=data['token'])
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		user = User()
 		UserID = data['user']['user_id']
 		user.UserID = UserID
-		user.RoleName = data['user']['role_name']
+		role = Role.objects.filter(RoleName=data['user']['role_name']).first()
+		user.role = role
 		user.password = make_password(data['user']['new_password'])
 		email = data['user']['email']
 		existUser = User.objects.get(email=email)
@@ -108,7 +109,8 @@ def addUser(request):
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
-			user.RoleName = data['user']['role_name']
+			role = Role.objects.filter(RoleName=data['user']['role_name']).first()
+			user.role = role
 		if 'max_borrow' in data['user']:
 			user.MaxBorrow = data['user']['max_borrow']
 		if 'phone' in data['user']:
@@ -150,7 +152,7 @@ def updateUserInfo(request):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		UserID = data['user']['user_id']
 		user = User.objects.filter(UserID=UserID).first()
@@ -168,8 +170,8 @@ def updateUserInfo(request):
 		if 'user_sex' in data['user']:
 			user.UserSex = data['user']['user_sex']
 		if 'role_name' in data['user']:
-			print data['user']['role_name']
-			user.RoleName = data['user']['role_name']
+			role = Role.objects.filter(RoleName=data['user']['role_name']).first()
+			user.role = role
 		if 'max_borrow' in data['user']:
 			user.MaxBorrow = data['user']['user_maxborrow']
 		if 'phone' in data['user']:
@@ -179,7 +181,7 @@ def updateUserInfo(request):
 		if 'fine' in data['user']:
 			user.Fine = data['user']['user_fine']
 		if 'total_borrow' in data['user']:
-			user.TotalBorrow = data['user']['total_borrow']
+			user.TotalBorrow = data['user']['user_totalborrow']
 		user.save()
 		result = {
 			'successful': True,
@@ -215,16 +217,16 @@ def deleteUser(request):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		dUserID = data['user']['user_id']
 		dUser = User()
 		dUser = User.objects.filter(UserID=dUserID).first()
 		if not dUser:
 			raise myError('该用户不存在!')
-		if str(dUser.RoleName) == '管理员':
+		if dUser.role.RoleName == '管理员':
 			raise myError('对不起,您没有该权限!')
-		if str(dUser.RoleName) == '协管员' and str(User.RoleName) != '管理员':
+		if dUser.role.RoleName == '协管员' and User.role.RoleName != '管理员':
 			 raise myError('对不起,您没有该权限!')
 		dUser.delete()
 		result = {
@@ -260,11 +262,12 @@ def addAdministrators(request):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员':
+		if (user.role.RoleName != '管理员'):
 			raise myError('对不起,您没有该权限!')
 		UserID = data['user']['user_id']
 		user = User.objects.filter(UserID=UserID).first()
-		user.RoleName = '协管员'
+		role = Role.objects.filter(RoleName='协管员').first()
+		user.role = role
 		user.save()
 		result = {
 			'successful': True,
@@ -299,11 +302,12 @@ def deleteAdministrators(request):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员':
+		if str(user.role.RoleName) != '管理员':
 			raise myError('对不起,您没有该权限!')
 		UserID = data['user']['user_id']
 		user = User.objects.filter(UserID=UserID).first()
-		user.RoleName = '读者'
+		role = Role.objects.filter(RoleName='读者').first()
+		user.role = role
 		user.save()
 		result = {
 			'successful': True,

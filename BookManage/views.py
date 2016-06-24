@@ -31,6 +31,12 @@ class myError(Exception):
 def allBook(requset):
 	try:
 		data = json.loads(requset.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		books = Book.objects.all()
 		bookList = []
 		for book in books:
@@ -42,7 +48,7 @@ def allBook(requset):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass),
+				'book_class': noneIfEmptyString(book.BookClass.ClassName),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
@@ -82,7 +88,7 @@ def allFreeBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		books = Book.objects.filter(BookState=True)
 		bookList = []
@@ -95,7 +101,7 @@ def allFreeBook(requset):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass),
+				'book_class': noneIfEmptyString(book.BookClass.ClassName),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
@@ -127,18 +133,18 @@ def allFine(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		fines = FineInfo.objects.all()
 		fineList = []
 		for fine in fines:
 			fineList.append({
-				'book_id': fine.BookID,
-				'user_id': fine.ReaderID,
+				'book_id': fine.book.BookID,
+				'user_id': fine.reader.UserID,
 				'pay_money': fine.Fine,
 				'pay_state': fine.PayState,
 				'pay_date': str(fine.PayDate),
-				'operate_id': fine.OperateID
+				'operate_id': fine.admin.UserID
 				})
 		result = {
 			'successful': True,
@@ -166,17 +172,17 @@ def allLost(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		losts = LostBook.objects.all()
 		lostList = []
 		for lost in losts:
 			lostList.append({
-				'book_id': lost.BookID,
-				'user_id': lost.ReaderID,
+				'book_id': lost.book.BookID,
+				'user_id': lost.reader.UserID,
 				'pay_money': lost.Fine,
 				'pay_date': str(lost.PayDate),
-				'operate_id': lost.OperateID
+				'operate_id': lost.admin.UserID
 				})
 		result = {
 			'successful': True,
@@ -204,14 +210,14 @@ def allBorrow(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		borrows = BorrowInfo.objects.all()
-		lborrowList = []
+		borrowList = []
 		for borrow in borrows:
 			borrowList.append({
-				'book_id': borrow.BookID,
-				'user_id': borrow.ReaderID,
+				'book_id': borrow.book.BookID,
+				'user_id': borrow.reader.UserID,
 				'borrow_time': str(borrow.BorrowTime),
 				'back_time': str(borrow.BackTime),
 				'renew_state': borrow.RenewState,
@@ -242,8 +248,9 @@ def addBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
-			raise myError('对不起,您没有添加图书的权限!')
+		print user.role.RoleName
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		book = Book()
 		BookID = data['book']['book_id']
 		existBook = Book()
@@ -261,7 +268,9 @@ def addBook(requset):
 		if 'book_date' in data['book']:
 			book.BookDate = data['book']['book_date']
 		if 'book_class' in data['book']:
-			book.BookClass = data['book']['book_class']
+			ClassName=data['book']['book_class']
+			bookclass = BookClasses.objects.filter(ClassName=ClassName).first()
+			book.BookClass = bookclass
 		if 'book_main' in data['book']:
 			book.BookMain = data['book']['book_main']
 		if 'book_prim' in data['book']:
@@ -300,8 +309,8 @@ def deleteBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
-			raise myError('对不起,您没有删除图书的权限!')
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		BookID = data['book']['book_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID).first()
@@ -341,10 +350,12 @@ def updateBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if (str(user.RoleName) != '管理员' and str(user.RoleName) != '协管员'):
-			raise myError('对不起,您没有修改图书信息的权限!')
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		book = Book()
 		book = Book.objects.filter(BookID=data['book']['book_id']).first()
+		if not book:
+			raise myError('该书不存在')
 		if 'book_name' in data['book']:
 			book.BookName = data['book']['book_name']
 		if 'book_writer' in data['book']:
@@ -354,13 +365,15 @@ def updateBook(requset):
 		if 'book_price' in data['book']:
 			book.BookPrice = data['book']['book_price']
 		if 'book_state' in data['book']:
-			book.BookState = data['book']['book_state']
+			book.BookState = bool(data['book']['book_state'])
 		if 'book_rno' in data['book']:
 			book.BookRNo = data['book']['book_rno']
 		if 'book_no' in data['book']:
 			book.BookNo = data['book']['book_no']
 		if 'book_class' in data['book']:
-			book.BookClass = data['book']['book_class']
+			ClassName=data['book']['book_class']
+			bookclass = BookClasses.objects.filter(ClassName=ClassName).first()
+			book.BookClass = bookclass
 		if 'book_main' in data['book']:
 			book.BookMain = data['book']['book_main']
 		if 'book_prim' in data['book']:
@@ -401,7 +414,7 @@ def borrowBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		borrow = BorrowInfo()
 		BookID = data['borrow']['book_id']
@@ -426,6 +439,8 @@ def borrowBook(requset):
 			raise myError('该用户有罚款未缴纳,不能借书!')
 		if user.BorrowNumber > user.MaxBorrowNumber:
 			raise myError('该用户借书本数已达可借本书上限值!')
+		borrow.book = book
+		borrow.user = user
 		book.BookState = False
 		user.BorrowNumber += 1
 		user.TotalBorrow += 1
@@ -465,9 +480,9 @@ def returnBook(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
-		BookID = BookID = data['return']['book_id']
+		BookID = data['return']['book_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID)
 		if not book:
@@ -476,11 +491,13 @@ def returnBook(requset):
 		borrow = BorrowInfo.objects.filter(BookID=BookID).first()
 		if not borrow:
 			raise myError('不存在该借阅信息,请检查是否输入错误!')
-		UserID = borrow.ReaderID
+		UserID = borrow.reader.UserID
 		user = User()
-		user = User.objects.filter(UserID=ReaderID).first()
+		user = User.objects.filter(UserID=UserID).first()
 		user.BorrowNumber -= 1
-		book_copy.save()
+		user.TotalBorrow += 1
+		book.BookState = True
+		book.save()
 		borrow.delete()
 		user.save()
 		book.BookState = True
@@ -517,15 +534,16 @@ def finePayment(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		UserID = data['user']['user_id']
 		fineInfo = FineInfo()
-		fineInfo = FineInfo.objects.filter(ReaderID=UserID)
+		reader = User.objects.filter(UserID=UserID).first()
+		fineInfo = FineInfo.objects.filter(reader=reader)
 		for fine in fineInfo:
 			fine.PayState = True
 			fine.PayDate = datetime.date.today()
-			fine.OperateID = user.UserID
+			fine.admin = user
 			fine.save()
 		user = User.objects.filter(UserID=UserID).first()
 		user.Fine = 0
@@ -563,23 +581,25 @@ def lostFine(requset):
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
 		user = token.user
-		if str(user.RoleName) != '管理员' and str(user.RoleName != '协管员'):
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		BookID = data['book']['book_id']
+		ReaderID = data['user']['user_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID).first()
 		if not book:
 			raise myError('该书不存在,请检查是否编号输入错误!')
 		borrowInfo = BorrowInfo()
-		borrowInfo = BorrowInfo.objects.filter(BookID=BookID).first()
+		borrowInfo = BorrowInfo.objects.filter(book=book).first()
 		if not borrowInfo:
 			raise myError('该书未被借出,请检查是否编号输入错误!')
+		reader = User.objects.filter(UserID=ReaderID).first()
 		lostBook = LostBook()
 		UserID = borrowInfo.UserID
-		lostBook.BookID = BookID
-		lostBook.ReaderID = UserID
+		lostBook.book = book
+		lostBook.reader = reader
 		lostBook.PayMoney = data['pay_money']
-		lostBook.OperateID = user.UserID
+		lostBook.admin = user
 		user = User.objects.filter(UserID=UserID).first()
 		user.BorrowNumber -=1
 		borrowInfo.delete()
