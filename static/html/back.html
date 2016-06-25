@@ -15,6 +15,10 @@
     <link href="../css/sb-admin-2.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="../css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="../css/td-child.css" rel="stylesheet">
+    <link href="../css/buttons.dataTables.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="wrapper">
@@ -27,9 +31,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">图书管理系统</a>
+                <a class="navbar-brand" href="system.html">图书管理系统</a>
             </div>
-            <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
@@ -39,17 +42,15 @@
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="system.html"><i class="fa fa-user fa-fw"></i> 修改用户信息</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
+                        <li><a href="changepassword.html"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
+                        <li>
+                            <a id='logout'><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                         </li>
                     </ul>
-                    <!-- /.dropdown-user -->
                 </li>
-                <!-- /.dropdown -->
             </ul>
-            <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
@@ -63,10 +64,9 @@
                                 </button>
                             </span>
                             </div>
-                            <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 读者功能<span class="fa arrow"></span></a>
+                            <a href="reader.html"><i class="fa fa-bar-chart-o fa-fw"></i> 读者功能<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="bookfind.html">图书查询</a>
@@ -77,10 +77,10 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> 图书管理</a>
+                            <a href="bookmamage.html"><i class="fa fa-wrench fa-fw"></i> 图书管理</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> 用户管理</a>
+                            <a href="usermanage.html"><i class="fa fa-sitemap fa-fw"></i> 用户管理</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-files-o fa-fw"></i> 借阅管理<span class="fa arrow"></span></a>
@@ -101,58 +101,62 @@
                         </li>
                     </ul>
                 </div>
-                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.navbar-static-side -->
         </nav>
 
         <div id="page-wrapper">
-        	<div class="row">
+            <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">用户密码</h1>
+                    <h1 class="page-header">归还信息</h1>
                 </div>
                 <div class="row">
-                	<div class="col-lg-12">
-                    	<div class="panel panel-default">
-	                        <div class="panel-heading">查看用户信息</div>
-	                    	<div class="panel-body">
-			                    <div class="col-lg-6 col-lg-offset-2">
-                                    <div id="changepassword">
-			                         <form class="form-horizontal">
-								    	    <div class="form-group">
-								    		    <label class="col-sm-2 control-label">原密码</label>
-								    		    <div class="col-sm-10">
-								    		      	<input type="password" class="form-control" v-model="oldpassword">
-								    		    </div>
-								    	  	</div>
-								    	  	<div class="form-group">
-								    		    <label class="col-sm-2 control-label">新密码</label>
-								    		    <div class="col-sm-10">
-								    		      	<input type="password" class="form-control" v-model="newpassword">
-								    		    </div>
-								    	  	</div>
-								    	  	<div class="form-group">
-								    		    <label class="col-sm-2 control-label">确认新密码</label>
-								    		    <div class="col-sm-10">
-								    		      	<input type="password" class="form-control" v-model="confnewpasssword">
-								    		    </div>
-								    	  	</div>
-								    	  	<div class="form-group">
-								    	    	<div class="col-sm-offset-2 col-sm-10">
-								    	      		<button type="button" class="btn btn-success" @click="dochangepassword">保存</button>
-								    	    	</div>
-								    	  	</div>
-								    	</form>
-                                    </div>
-			                    </div>
-			                </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">归还管理</div>
+                            <div class="panel-body">
+                                <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>图书编号</th>
+                                            <th>图书索书号</th>
+                                            <th>书名</th>
+                                            <th>图书类型</th>
+                                            <th>是否可借</th>
+                                            <th>图书位置</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+	        <div class="modal fade" id="backModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        		<h3 id="myModalLabel">归还图书</h3>
+	                    </div>
+	                    <div class="modal-body">
+	                        <h4>是否归还？</h4>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
+	                        <button type="button" class="btn btn-primary btn_save" onclick='dobackbook()'>确定</button>
 	                    </div>
 	                </div>
 	            </div>
-            </div>
+	        </div>
         </div>
     </div>
-    <!-- /#wrapper -->
 
     <!-- jQuery -->
     <script src="../js/jquery.min.js"></script>
@@ -165,6 +169,15 @@
     <script src="../js/superagent.js"></script>
     <script src="../js/vue.js"></script>
     <script src="../js/util.js"></script>
-    <script src="../js/changepassword.js"></script>
+    <script src="../js/logout.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="../js/jszip.js"></script>
+    <script src="../js/jquery.dataTables.js"></script>
+    <script src="../js/dataTables.bootstrap.js"></script>
+    <script src="../js/dataTables.buttons.min.js"></script>
+    <script src="../js/buttons.bootstrap.js"></script>
+    <script src="../js/buttons.html5.js"></script>
+    <script src="../js/constant.js"></script>
+    <script src="../js/backmanage.js"></script>
 </body>
 </html>

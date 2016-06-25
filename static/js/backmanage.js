@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allFreeBook",
+               	url: "/bookManage/allBook",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -113,15 +113,16 @@ function showborrow(data) {
 }
 
 function doborrow() {
-    var url = '/bookManage/borrowBook';
+    var url = '/bookManage/updateBook';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':$("#book_id").val()
-        },
-        user:{
-        	'user_id':$("#user_id").val()
+            'book_id':$("#book_id").val(),
+            'book_no':$("#book_index").val(),
         }
+//      user:{
+//      	'user_id':$("#user_id").val()
+//      }
     };
     request.post(url)
     	.send(post_data)

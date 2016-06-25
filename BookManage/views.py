@@ -417,8 +417,8 @@ def borrowBook(request):
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		borrow = BorrowInfo()
-		BookID = data['borrow']['book_id']
-		ReaderID = data['borrow']['reader_id']
+		BookID = data['book']['book_id']
+		ReaderID = data['user']['user_id']
 		user = User()
 		user = User.objects.filter(UserID=ReaderID).first()
 		if not user:
@@ -430,17 +430,18 @@ def borrowBook(request):
 		existBorrow = BorrowInfo()
 		if not book.BookState:
 			raise myError('该书目前不能借出或已借出!')
-		existBorrow = BorrowInfo.objects.filter(BookID=BookID).first()
+		existBorrow = BorrowInfo.objects.filter(book=book).first()
 		if existBorrow:
 			raise myError('该书已被借出!')
 		fine = FineInfo()
-		fine = FineInfo.objects.filter(ReaderID=ReaderID).first()
+		fine = FineInfo.objects.filter(reader=user).first()
 		if fine:
 			raise myError('该用户有罚款未缴纳,不能借书!')
 		if user.BorrowNumber > user.MaxBorrowNumber:
 			raise myError('该用户借书本数已达可借本书上限值!')
 		borrow.book = book
-		borrow.user = user
+		borrow.reader = user
+		borrow.BackTime = datetime.date.today() + datetime.timedelta(days=60)
 		book.BookState = False
 		user.BorrowNumber += 1
 		user.TotalBorrow += 1
