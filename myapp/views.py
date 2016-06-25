@@ -83,7 +83,6 @@ def confirm(request):
 		s = Serializer('SECRET_KEY')
 		confirm = s.loads(data)
 		email = confirm['confirm']
-		print email
 		user = User()
 		user = User.objects.filter(email=email).first()
 		if user:
@@ -92,7 +91,12 @@ def confirm(request):
 			confirm_msg = '您的邮箱已验证成功,将为您跳转到登录页面'
 	except Exception, e:
 		confirm_msg = '该链接无效或已失效,一封新的确认邮件已经发送至您的邮箱'
-		send_verificationEmail(email)
+		# data = request.GET.get('confirm')
+		# s = Serializer('SECRET_KEY')
+		# confirm = s.loads(data)
+		# email = confirm['confirm']
+		# send_verificationEmail(email)
+		print e.args
 	finally:
 		return render(request, 'trans.html',
 				{

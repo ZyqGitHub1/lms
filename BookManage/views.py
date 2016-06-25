@@ -28,9 +28,9 @@ class myError(Exception):
     def __str__(self):
         return repr(self.value)
 
-def allBook(requset):
+def allBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -81,9 +81,9 @@ def allBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def allFreeBook(requset):
+def allFreeBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -101,7 +101,7 @@ def allFreeBook(requset):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass.ClassName),
+				'book_class': noneIfEmptyString(book.BookClass),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
@@ -126,9 +126,9 @@ def allFreeBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def allFine(requset):
+def allFine(request):
 	try:
-		data = data = json.loads(requset.body)
+		data = data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -165,9 +165,9 @@ def allFine(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def allLost(requset):
+def allLost(request):
 	try:
-		data = data = json.loads(requset.body)
+		data = data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -203,9 +203,9 @@ def allLost(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def allBorrow(requset):
+def allBorrow(request):
 	try:
-		data = data = json.loads(requset.body)
+		data = data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -241,9 +241,9 @@ def allBorrow(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def addBook(requset):
+def addBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -302,9 +302,9 @@ def addBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def deleteBook(requset):
+def deleteBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -343,9 +343,9 @@ def deleteBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def updateBook(requset):
+def updateBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -407,9 +407,9 @@ def updateBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def borrowBook(requset):
+def borrowBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -473,9 +473,9 @@ def borrowBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def returnBook(requset):
+def returnBook(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -527,9 +527,9 @@ def returnBook(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def finePayment(requset):
+def finePayment(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -574,9 +574,9 @@ def finePayment(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-def lostFine(requset):
+def lostFine(request):
 	try:
-		data = json.loads(requset.body)
+		data = json.loads(request.body)
 		token = Token()
 		token = Token.objects.filter(token=data['token']).first()
 		user = User()
@@ -632,3 +632,88 @@ def lostFine(requset):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
+def allBookClasses(request):
+	try:
+		data = json.loads(request.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		classList = []
+		bookClasses = BookClasses.objects.all()
+		for bookClass in BookClasses:
+			classList.append({
+				'book_class': bookClass.ClassName
+				})
+		result = {
+			'successful': True,
+			'data': classList,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+		
+def addBookClasses(request):
+	try:
+		data = json.loads(request.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		ClassName = data['book']['book_class']
+		existClass = BookClasses.objects.filter(ClassName=ClassName).first()
+		if existClass:
+			raise myError('该图书类别已存在!')
+		booClass = BookClasses()
+		bookClass.ClassName = ClassName
+		bookClass.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+# def deleteBookClass(request):

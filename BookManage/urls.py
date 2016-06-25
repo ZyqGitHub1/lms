@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^updateBook$', views.updateBook),
     url(r'^borrowBook$', views.borrowBook),
     url(r'^returnBook$', views.returnBook),
+    url(r'^allBookClasses$', views.allBookClasses),
+    url(r'^addBookClasses$', views.addBookClasses),
 ]
