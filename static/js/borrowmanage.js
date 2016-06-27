@@ -108,7 +108,7 @@ $('#dataTables-example tbody').on(
 
 function showborrow(data) {
     $("#book_id").val(data.book_id);
-    $("#book_index").val(data.book_no);
+    $("#book_name").val(data.book_name);
     $("#borrowModal").modal("show");
 }
 
