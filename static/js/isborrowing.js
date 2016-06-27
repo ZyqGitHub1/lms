@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allFreeBook",
+               	url: "/myapp/user/borrowNow",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -32,7 +32,7 @@ var _table = $table.dataTable($.extend(
                     callback(returnData);
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                   $.alert("查询失败");
+                   alert("查询失败");
                 }
             });
         },
@@ -51,19 +51,19 @@ var _table = $table.dataTable($.extend(
                 data: "book_id",
             },
             {
-                data: "book_no",
-            },
-            {
                 data : "book_name",
             },
             {
                 data : "book_class",
             },
             {
-                data : "book_state",
+                data : "borrow_time",
             },
             {
-                data : "book_rno",
+                data : "back_time",
+            },
+            {
+            	data : "ahead_of_time"
             },
             {
                 className : "td-operation",
@@ -75,15 +75,14 @@ var _table = $table.dataTable($.extend(
         "createdRow": function ( row, data, index ) {
             //行渲染回调,在这里可以对该行dom元素进行任何操作
             //不使用render，改用jquery文档操作呈现单元格
-            var $btnBorrow = $('<a>借阅</a>');
-            $btnBorrow.on(
+            var $btnReborrow = $('<a>续借</a>');
+            $btnReborrow.on(
                 'click',
                 function () {
-                    showborrow(data);
+                    showReborrow(data);
                 }
             );
-            console.log(data);
-            $('td', row).eq(7).append($btnBorrow);
+            $('td', row).eq(7).append($btnReborrow);
         },
     })
 ).api()
@@ -106,21 +105,18 @@ $('#dataTables-example tbody').on(
     }
 );
 
-function showborrow(data) {
-    $("#book_id").val(data.book_id);
-    $("#book_name").val(data.book_name);
-    $("#borrowModal").modal("show");
+function showReborrow(data) {
+	$("#reborrow_book_id").val(data.book_id);
+	$("#reborrow_user_id").val(data.user_id);
+    $("#reborrowModal").modal("show");
 }
 
-function doborrow() {
-    var url = '/bookManage/borrowBook';
+function doreborrowbook() {
+    var url = '/myapp/user/renew';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':$("#book_id").val()
-        },
-        user:{
-        	'user_id':$("#user_id").val()
+            'book_id':$("#reborrow_book_id").val()
         }
     };
     request.post(url)
@@ -134,9 +130,9 @@ function doborrow() {
                 alert(response.body.error.msg);
             }
             else{
-                alert("借阅成功");
+                alert("续借成功");
                 _table.ajax.reload();
-                $("#borrowModal").modal('toggle');
+                $("#reborrowModal").modal('toggle');
             }
     	})
 }

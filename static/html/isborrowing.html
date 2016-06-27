@@ -15,6 +15,10 @@
     <link href="../css/sb-admin-2.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="../css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="../css/td-child.css" rel="stylesheet">
+    <link href="../css/buttons.dataTables.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="wrapper">
@@ -29,7 +33,6 @@
                 </button>
                 <a class="navbar-brand" href="system.html">图书管理系统</a>
             </div>
-            <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
@@ -46,11 +49,8 @@
                             <a id='logout'><i class="fa fa-sign-out fa-fw"></i> 登出</a>
                         </li>
                     </ul>
-                    <!-- /.dropdown-user -->
                 </li>
-                <!-- /.dropdown -->
             </ul>
-            <!-- /.navbar-top-links -->
 
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
@@ -109,96 +109,76 @@
                         </li>
                     </ul>
                 </div>
-                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.navbar-static-side -->
         </nav>
 
         <div id="page-wrapper">
-        	<div class="row">
+            <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">用户信息</h1>
+                    <h1 class="page-header">当前借阅</h1>
                 </div>
                 <div class="row">
-                	<div class="col-lg-12">
-                    	<div class="panel panel-default">
-	                        <div class="panel-heading">查看用户信息</div>
-			                <div class="panel-body">
-			                    <div class="col-lg-6 col-lg-offset-2">
-                                <div id="infovue">
-			                        <form class="form-horizontal">
-									    <div class="form-group">
-										    <label class="col-sm-2 control-label">姓名</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="username">
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">性别</label>
-										    <div class="col-sm-10">
-									      	 	<select class="form-control" v-model="sex">
-                                                    <option>男</option>
-                                                    <option>女</option>
-                                            	</select>
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">最大借阅数</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="maxbook" disabled>
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">读者类型</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="role" disabled>
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">Email</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="email">
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">Tel</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="tel">
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">住址</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="addr">
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">注册日期</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="register_time" disabled>
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-										    <label class="col-sm-2 control-label">欠款金额</label>
-										    <div class="col-sm-10">
-										      	<input type="text" class="form-control" v-model="fine" disabled>
-										    </div>
-									  	</div>
-									  	<div class="form-group">
-									    	<div class="col-sm-offset-2 col-sm-10">
-									      		<button type="button" class="btn btn-success" @click="dochange">保存修改</button>
-									    	</div>
-									  	</div>
-									</form>
-                                    </div>
-			                    </div>
-			                </div>
-            			</div>
-        			</div>
-				</div>
-    		</div>
-    	</div>
-    <!-- /#wrapper -->
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">当前借阅信息</div>
+                            <div class="panel-body">
+                                <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>图书编号</th>
+                                            <th>书名</th>
+                                            <th>图书类别</th>
+                                            <th>借阅日期</th>
+                                            <th>应还日期</th>
+                                            <th>是否超期</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	        <!-- Modal -->
+	        <div class="modal fade" id="reborrowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog">
+	                <div class="modal-content">
+	                    <div class="modal-header">
+	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        		<h3 id="myModalLabel">续借图书</h3>
+	                    </div>
+	                    <div class="modal-body">
+	                        <h4>续借图书信息</h4>
+	                        <form class="form-horizontal">
+							  	<div class="form-group">
+							    	<label class="col-sm-2 control-label">图书编号</label>
+							    	<div class="col-sm-10">
+							      		<input type="text" class="form-control" id="reborrow_book_id" disabled>
+							    	</div>
+							  	</div>
+							  	<div class="form-group">
+							    	<label class="col-sm-2 control-label">读者编号</label>
+							    	<div class="col-sm-10">
+							      		<input type="text" class="form-control" id="reborrow_user_id" disabled>
+							    	</div>
+							  	</div>
+							</form>
+	                    </div>
+	                    <div class="modal-footer">
+	                        <button type="button" class="btn btn-danger btn_cancel" data-dismiss="modal">取消</button>
+	                        <button type="button" class="btn btn-primary btn_save" onclick='doreborrowbook()'>确定</button>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+    </div>
 
     <!-- jQuery -->
     <script src="../js/jquery.min.js"></script>
@@ -211,8 +191,15 @@
     <script src="../js/superagent.js"></script>
     <script src="../js/vue.js"></script>
     <script src="../js/util.js"></script>
-    <script src="../js/token2user.js"></script>
-    <script src="../js/userinfo.js"></script>
     <script src="../js/logout.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="../js/jszip.js"></script>
+    <script src="../js/jquery.dataTables.js"></script>
+    <script src="../js/dataTables.bootstrap.js"></script>
+    <script src="../js/dataTables.buttons.min.js"></script>
+    <script src="../js/buttons.bootstrap.js"></script>
+    <script src="../js/buttons.html5.js"></script>
+    <script src="../js/constant.js"></script>
+    <script src="../js/isborrowing.js"></script>
 </body>
 </html>

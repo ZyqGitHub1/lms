@@ -11,5 +11,7 @@ urlpatterns = [
     url(r'^user/change_info$', views.change_info),
     url(r'^user/change_password$', views.change_password),
     url(r'^user/confirm$', views.confirm),
-    url(r'^user/reconfirm$', views.reconfirm)
+    url(r'^user/reconfirm$', views.reconfirm),
+    url(r'^user/renew$', views.renew),
+    url(r'^user/borrowNow$', views.borrowNow),
 ]
