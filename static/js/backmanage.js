@@ -151,12 +151,12 @@ function dobackbook() {
 }
 
 function dolosebook() {
-    var url = '/bookManage/updateBook';
+    var url = '/bookManage/lostFine';
     var post_data={
         token:loginobj.data.token,
         book:{
             'book_id':$("#lose_book_id").val()
-        }
+        },
         user:{
         	'user_id':$("#lose_user_id").val()
         }
@@ -174,7 +174,7 @@ function dolosebook() {
             else{
                 alert("遗失信息提交成功");
                 _table.ajax.reload();
-                $("#backModal").modal('toggle');
+                $("#loseModal").modal('toggle');
             }
     	})
 }

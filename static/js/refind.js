@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allBook",
+               	url: "/bookManage/allLost",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -57,10 +57,10 @@ var _table = $table.dataTable($.extend(
                 data : "user_id",
             },
             {
-                data : "money",
+                data : "pay_money",
             },
             {
-                data : "handle_time",
+                data : "pay_date",
             },
             {
             	data : "admin_id"
@@ -113,12 +113,12 @@ function showRefind(data) {
 }
 
 function dorefindbook() {
-    var url = '/bookManage/updateBook';
+    var url = '/bookManage/lostFine';
     var post_data={
         token:loginobj.data.token,
         book:{
             'book_id':$("#refind_book_id").val()
-        }
+        },
         user:{
         	'user_id':$("#refind_user_id").val()
         }
@@ -136,7 +136,7 @@ function dorefindbook() {
             else{
                 alert("成功删除遗失信息");
                 _table.ajax.reload();
-                $("#backModal").modal('toggle');
+                $("#refindModal").modal('toggle');
             }
     	})
 }

@@ -187,10 +187,11 @@ def allLost(request):
 		for lost in losts:
 			lostList.append({
 				'book_id': lost.book.BookID,
+				'book_name': lost.book.BookName,
 				'user_id': lost.reader.UserID,
-				'pay_money': lost.Fine,
-				'pay_date': str(lost.PayDate),
-				'operate_id': lost.admin.UserID
+				'pay_money': lost.PayMoney,
+				'pay_date': str(lost.OperateDate),
+				'admin_id': lost.admin.UserID
 				})
 		result = {
 			'successful': True,
@@ -322,8 +323,14 @@ def deleteBook(request):
 		BookID = data['book']['book_id']
 		book = Book()
 		book = Book.objects.filter(BookID=BookID).first()
-		if not book.BookState:
+		borrowInfo = BorrowInfo()
+		borrowInfo = BorrowInfo.objects.filter(book=book).first()
+		if borrowInfo:
 			raise myError('该书已被借出,不能删除!')
+		lost = LostBook()
+		lost = LostBook.objects.filter(book=book).first()
+		if lost:
+			raise myError('该书在遗失表中，不能删除!')
 		book.delete()
 		result = {
 			'successful': True,
@@ -603,17 +610,16 @@ def lostFine(request):
 			raise myError('该书未被借出,请检查是否编号输入错误!')
 		reader = User.objects.filter(UserID=ReaderID).first()
 		lostBook = LostBook()
-		UserID = borrowInfo.UserID
+		UserID = borrowInfo.reader.UserID
 		lostBook.book = book
 		lostBook.reader = reader
-		lostBook.PayMoney = data['pay_money']
+		lostBook.PayMoney = 50
 		lostBook.admin = user
 		user = User.objects.filter(UserID=UserID).first()
 		user.BorrowNumber -=1
 		borrowInfo.delete()
 		user.save()
 		lostBook.save()
-		book.delete()
 		result = {
 			'successful': True,
 			'error': {

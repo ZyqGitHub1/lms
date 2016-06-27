@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allBook",
+               	url: "/myapp/user/borrowNow",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -32,7 +32,7 @@ var _table = $table.dataTable($.extend(
                     callback(returnData);
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
-                   $.alert("查询失败");
+                   alert("查询失败");
                 }
             });
         },
@@ -112,14 +112,11 @@ function showReborrow(data) {
 }
 
 function doreborrowbook() {
-    var url = '/bookManage/updateBook';
+    var url = '/myapp/user/renew';
     var post_data={
         token:loginobj.data.token,
         book:{
             'book_id':$("#reborrow_book_id").val()
-        }
-        user:{
-        	'user_id':$("#reborrow_user_id").val()
         }
     };
     request.post(url)
@@ -135,7 +132,7 @@ function doreborrowbook() {
             else{
                 alert("续借成功");
                 _table.ajax.reload();
-                $("#backModal").modal('toggle');
+                $("#reborrowModal").modal('toggle');
             }
     	})
 }

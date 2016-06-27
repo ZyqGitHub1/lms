@@ -143,7 +143,7 @@ def login(request):
 		token.save()
 		result = {
 			'data': {
-				'confired': confirmed,
+				'confirmed': confirmed,
 				'role_name': RoleName,
 				'token': customerToken,
 				'expire': -1,
@@ -343,19 +343,28 @@ def borrowNow(request):
 		token = Token.objects.get(token=data['token'])
 		user = token.user
 		borrowInfo = BorrowInfo()
-		borrowInfo = BorrowInfo.objects.filter(RearerID=user.UserID)
+		borrowInfo = BorrowInfo.objects.filter(reader=user)
 		borrowList = []
 		for borrow in borrowInfo:
+			ahead_of_time = False
+			if datetime.date.today() > borrow.BackTime:
+				ahead_of_time = True
 			book = Book()
-			book = borrow.BookID
+			book = borrow.book
+			if not book.BookClass:
+				bookClass = None
+			else:
+				bookClass = book.BookClass.ClassName
 			borrowList.append({
 				'book_id': book.BookID,
 				'book_name': book.BookName,
+				'book_class': bookClass,
 				'book_writer': book.BookWriter,
 				'book_publish': book.BookPublish,
 				'book_rno': book.BookRNo,
-				'borrow_time': borrow.BorrowTime,
-				'back_time': borrow.BackTime,
+				'borrow_time': str(borrow.BorrowTime),
+				'back_time': str(borrow.BackTime),
+				'ahead_of_time': ahead_of_time,
 				})
 		result = {
 			'successful': True,
@@ -387,13 +396,14 @@ def borrowNow(request):
 def renew(request):
 	try:
 		data = json.loads(request.body)
-		BookID = data['book_id']
+		BookID = data['book']['book_id']
 		token = Token()
 		user = User()
 		borrowInfo = BorrowInfo()
 		token = Token.objects.filter(token=data['token']).first()
 		user = token.user
-		borrowInfo = BorrowInfo.objects.filter(BookID=BookID).first()
+		book = Book.objects.filter(BookID=BookID).first()
+		borrowInfo = BorrowInfo.objects.filter(book=book).first()
 		if borrowInfo.RenewState:
 			raise myError('每本书只能续借一次')
 		borrowInfo.BackTime += datetime.timedelta(15)
