@@ -174,7 +174,7 @@ function dolosebook() {
             else{
                 alert("遗失信息提交成功");
                 _table.ajax.reload();
-                $("#backModal").modal('toggle');
+                $("#loseModal").modal('toggle');
             }
     	})
 }

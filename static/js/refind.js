@@ -136,7 +136,7 @@ function dorefindbook() {
             else{
                 alert("成功删除遗失信息");
                 _table.ajax.reload();
-                $("#backModal").modal('toggle');
+                $("#refindModal").modal('toggle');
             }
     	})
 }
