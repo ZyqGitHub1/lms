@@ -115,6 +115,8 @@ $('#dataTables-example tbody').on(
 
 function showBack(data) {
     $("#back_book_id").val(data.book_id);
+    $("#back_book_name").val(data.book_name);
+    $("#back_user_id").val(data.user_id);
     $("#backModal").modal("show");
 }
 
