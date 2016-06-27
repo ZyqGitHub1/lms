@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allBorrow",
+               	url: "/bookManage/allBook",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -54,7 +54,7 @@ var _table = $table.dataTable($.extend(
                 data : "book_name",
             },
             {
-                data : "user_id",
+                data : "book_class",
             },
             {
                 data : "borrow_time",
@@ -63,7 +63,7 @@ var _table = $table.dataTable($.extend(
                 data : "back_time",
             },
             {
-            	data : "renew_state"
+            	data : "ahead_of_time"
             },
             {
                 className : "td-operation",
@@ -75,22 +75,14 @@ var _table = $table.dataTable($.extend(
         "createdRow": function ( row, data, index ) {
             //行渲染回调,在这里可以对该行dom元素进行任何操作
             //不使用render，改用jquery文档操作呈现单元格
-            var $btnBack = $('<a>还书</a>');
-            var $btnLose = $('<a>遗失</a>');
-            $btnBack.on(
+            var $btnReborrow = $('<a>续借</a>');
+            $btnReborrow.on(
                 'click',
                 function () {
-                    showBack(data);
+                    showReborrow(data);
                 }
             );
-            $btnLose.on(
-                'click',
-                function () {
-                    showLose(data);
-                }
-            );
-            console.log(data);
-            $('td', row).eq(7).append($btnBack).append("|").append($btnLose);
+            $('td', row).eq(7).append($btnReborrow);
         },
     })
 ).api()
@@ -113,52 +105,21 @@ $('#dataTables-example tbody').on(
     }
 );
 
-function showBack(data) {
-    $("#back_book_id").val(data.book_id);
-    $("#backModal").modal("show");
+function showReborrow(data) {
+	$("#reborrow_book_id").val(data.book_id);
+	$("#reborrow_user_id").val(data.user_id);
+    $("#reborrowModal").modal("show");
 }
 
-function showLose(data) {
-	$("#lose_book_id").val(data.book_id);
-	$("#lose_user_id").val(data.user_id);
-    $("#loseModal").modal("show");
-}
-
-function dobackbook() {
-    var url = '/bookManage/returnBook';
-    var post_data={
-        token:loginobj.data.token,
-        book:{
-            'book_id':$("#back_book_id").val()
-        }
-    };
-    request.post(url)
-    	.send(post_data)
-    	.set('Accept', 'application/json')
-    	.end(function(error,response){
-        	if (error) {
-                alert("网络异常");
-            }
-            else if(!response.body.successful) {
-                alert(response.body.error.msg);
-            }
-            else{
-                alert("还书成功");
-                _table.ajax.reload();
-                $("#backModal").modal('toggle');
-            }
-    	})
-}
-
-function dolosebook() {
+function doreborrowbook() {
     var url = '/bookManage/updateBook';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':$("#lose_book_id").val()
+            'book_id':$("#reborrow_book_id").val()
         }
         user:{
-        	'user_id':$("#lose_user_id").val()
+        	'user_id':$("#reborrow_user_id").val()
         }
     };
     request.post(url)
@@ -172,7 +133,7 @@ function dolosebook() {
                 alert(response.body.error.msg);
             }
             else{
-                alert("遗失信息提交成功");
+                alert("续借成功");
                 _table.ajax.reload();
                 $("#backModal").modal('toggle');
             }
