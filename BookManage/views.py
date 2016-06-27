@@ -40,6 +40,10 @@ def allBook(request):
 		books = Book.objects.all()
 		bookList = []
 		for book in books:
+			if not book.BookClass:
+				bookClass = None
+			else:
+				bookClass = book.BookClass.ClassName
 			bookList.append({
 				'book_id': book.BookID,
 				'book_no': book.BookNo,
@@ -48,7 +52,7 @@ def allBook(request):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass),
+				'book_class': noneIfEmptyString(bookClass),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
@@ -93,6 +97,10 @@ def allFreeBook(request):
 		books = Book.objects.filter(BookState=True)
 		bookList = []
 		for book in books:
+			if not book.BookClass:
+				bookClass = None
+			else:
+				bookClass = book.BookClass.ClassName
 			bookList.append({
 				'book_id': book.BookID,
 				'book_no': book.BookNo,
@@ -101,7 +109,7 @@ def allFreeBook(request):
 				'book_publish': book.BookPublish,
 				'book_price': book.BookPrice,
 				'book_date': noneIfEmptyString(str(book.BookDate)),
-				'book_class': noneIfEmptyString(book.BookClass),
+				'book_class': noneIfEmptyString(bookClass),
 				'book_main': noneIfEmptyString(book.BookMain),
 				'book_prim': noneIfEmptyString(book.BookPrim),
 				'book_state': book.BookState,
@@ -217,6 +225,7 @@ def allBorrow(request):
 		for borrow in borrows:
 			borrowList.append({
 				'book_id': borrow.book.BookID,
+				'book_name': borrow.book.BookName,
 				'user_id': borrow.reader.UserID,
 				'borrow_time': str(borrow.BorrowTime),
 				'back_time': str(borrow.BackTime),
@@ -224,7 +233,7 @@ def allBorrow(request):
 				})
 		result = {
 			'successful': True,
-			'data': borrowlostList,
+			'data': borrowList,
 			'error': {
 				'id': '',
 				'msg': '',
@@ -265,15 +274,14 @@ def addBook(request):
 		book.BookPrice = data['book']['book_price']
 		book.BookState = data['book']['book_state']
 		book.BookRNo = data['book']['book_rno']
-		if 'book_date' in data['book']:
-			book.BookDate = data['book']['book_date']
-		if 'book_class' in data['book']:
+		book.BookDate = noneIfEmptyString(data['book']['book_date'])
+		if not noneIfEmptyString(data['book']['book_class']):
 			ClassName=data['book']['book_class']
 			bookclass = BookClasses.objects.filter(ClassName=ClassName).first()
 			book.BookClass = bookclass
-		if 'book_main' in data['book']:
+		if not noneIfEmptyString(data['book']['book_main']):
 			book.BookMain = data['book']['book_main']
-		if 'book_prim' in data['book']:
+		if not noneIfEmptyString(data['book']['book_prim']):
 			book.BookPrim = data['book']['book_prim']
 		book.save()
 		result = {
@@ -483,20 +491,19 @@ def returnBook(request):
 		user = token.user
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
-		BookID = data['return']['book_id']
+		BookID = data['book']['book_id']
 		book = Book()
-		book = Book.objects.filter(BookID=BookID)
+		book = Book.objects.filter(BookID=BookID).first()
 		if not book:
 			raise myError('该图书编号不存在,请检查是否输入错误!')
 		borrow = BorrowInfo()
-		borrow = BorrowInfo.objects.filter(BookID=BookID).first()
+		borrow = BorrowInfo.objects.filter(book=book).first()
 		if not borrow:
 			raise myError('不存在该借阅信息,请检查是否输入错误!')
 		UserID = borrow.reader.UserID
 		user = User()
 		user = User.objects.filter(UserID=UserID).first()
 		user.BorrowNumber -= 1
-		user.TotalBorrow += 1
 		book.BookState = True
 		book.save()
 		borrow.delete()
@@ -717,4 +724,48 @@ def addBookClasses(request):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-# def deleteBookClass(request):
+def deleteBookClass(request):
+	try:
+		data = json.loads(request.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		ClassName = data['book']['book_class']
+		books = Book()
+		books = Book.objects.filter(ClassName=ClassName)
+		for book in books:
+			book.ClassName = None
+		books.save()
+		bookClass = BookClasses()
+		bookClass = BookClasses.objects.filter(ClassName=ClassName).first()
+		if not bookClass:
+			raise myError('该图书类别不存在')
+		bookClass.delete()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')

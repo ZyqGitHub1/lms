@@ -10,7 +10,7 @@ var _table = $table.dataTable($.extend(
            	};
            	$.ajax({
                	type: "POST",
-               	url: "/bookManage/allBook",
+               	url: "/bookManage/allBorrow",
                	contentType: 'application/json',
           	 	cache : false,  //禁用缓存
       		 	data: toJSON(param),    //传入已封装的参数
@@ -57,13 +57,13 @@ var _table = $table.dataTable($.extend(
                 data : "user_id",
             },
             {
-                data : "borrow_date",
+                data : "borrow_time",
             },
             {
-                data : "back_date",
+                data : "back_time",
             },
             {
-            	data : "ahead_of_time"
+            	data : "renew_state"
             },
             {
                 className : "td-operation",
@@ -114,6 +114,7 @@ $('#dataTables-example tbody').on(
 );
 
 function showBack(data) {
+    $("#back_book_id").val(data.book_id);
     $("#backModal").modal("show");
 }
 
@@ -124,12 +125,11 @@ function showLose(data) {
 }
 
 function dobackbook() {
-    var url = '/bookManage/updateBook';
+    var url = '/bookManage/returnBook';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':$("#book_id").val(),
-            'book_no':$("#book_index").val(),
+            'book_id':$("#back_book_id").val()
         }
     };
     request.post(url)
