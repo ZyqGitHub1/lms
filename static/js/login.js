@@ -42,12 +42,12 @@ var resigerVue = new Vue({
                     }
                     else{
                         console.log(response.body);
-                        if (response.body.confirmed == false) {
+                        if (response.body.data.confirmed == false) {
                         	alert("邮箱未验证");
                         	sessionStorage.setItem('login',toJSON(response.body));
                         	window.location.href = "/static/html/unconfirmed.html";
                         } else {
-                        	if (response.body.role_name == "管理员") {
+                        	if (response.body.data.role_name == "管理员") {
                         		alert('登陆成功');
 		                        sessionStorage.setItem('login',toJSON(response.body));
 		                        window.location.href = "/static/html/system.html";
