@@ -127,7 +127,7 @@ class FineInfo(models.Model):
 	Fine = models.IntegerField()
 	PayState = models.BooleanField(default=False)
 	PayDate = models.DateField(null=True, blank=True)
-	admin = models.ForeignKey(User, default=None, related_name='fine_admin')
+	admin = models.ForeignKey(User, null=True, default=None, related_name='fine_admin')
 
 class LostBook(models.Model):
 	book = models.ForeignKey(Book)

@@ -129,24 +129,49 @@ def allFreeBook(request):
 
 def allFine(request):
 	try:
-		data = data = json.loads(request.body)
-		token = Token()
-		token = Token.objects.filter(token=data['token']).first()
-		user = User()
-		user = token.user
-		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
-			raise myError('对不起,您没有该权限!')
-		fines = FineInfo.objects.all()
+		# data = data = json.loads(request.body)
+		# token = Token()
+		# token = Token.objects.filter(token=data['token']).first()
+		# user = User()
+		# user = token.user
+		# if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+		# 	raise myError('对不起,您没有该权限!')
+		fineUsers = FineInfo.objects.all()
+		fineUserIDList = []
+		for fineUser in fineUsers:
+			fineUserIDList.append(fineUser.reader.UserID)
+		fineUserIDList = list(set(fineUserIDList))
 		fineList = []
-		for fine in fines:
-			fineList.append({
-				'book_id': fine.book.BookID,
-				'user_id': fine.reader.UserID,
-				'pay_money': fine.Fine,
-				'pay_state': fine.PayState,
-				'pay_date': str(fine.PayDate),
-				'operate_id': fine.admin.UserID
-				})
+		for fineUserID in fineUserIDList:
+			user = User.objects.filter(UserID=fineUserID).first()
+			print user.UserID
+			everyList = []
+			fines = FineInfo.objects.filter(reader=user)
+			totalMoney = 0
+			operateId = None
+			if fines[0].admin:
+				operateId = fines[0].admin.UserID
+			for fine in fines:
+				totalMoney += fine.Fine
+			everyList.append({
+					'user_id': user.UserID,
+					'user_email': user.email,
+					'pay_money': totalMoney,
+					'pay_state': fine.PayState,
+					'pay_date': str(fine.PayDate),
+					'operate_id':  str(operateId)
+					})
+			for fine in fines:
+				# borrowInfo = BorrowInfo.objects.filter(book=fine.book).first()
+				everyList.append({
+					'book_id': fine.book.BookID,
+					'book_name': fine.book.BookName,
+					# 'borrow_date': str(borrowInfo.BorrowTime),
+					# 'back_date': str(borrowInfo.BackTime),
+					'fine_money': fine.Fine,
+					})
+			fineList.append(everyList)
+			print user.UserID
 		result = {
 			'successful': True,
 			'data': fineList,
