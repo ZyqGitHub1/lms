@@ -814,6 +814,47 @@ def deleteBookClass(request):
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-# def updateBookClass(request):
-# 	try:
-		
+def updateBookClass(request):
+	try:
+		data = json.loads(request)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
+		classID = date['class']['class_id']
+		ClassName = data['class']['class_name']
+		existClass = BookClasses()
+		existClass = BookClasses.objects.filter(ClassName=ClassName).first()
+		if existClass:
+			raise myError('该类别名已存在!')
+		bookClass = BookClasses()
+		bookClass = BookClasses.objects.filter(id=class_id).first()
+		bookClass.ClassName = ClassName
+		bookClass.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')

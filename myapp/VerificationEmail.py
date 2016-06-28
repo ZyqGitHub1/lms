@@ -19,7 +19,7 @@ def send_verificationEmail(to_email):
 		text_content = "这是一封很重要的邮件!"
 		html_content = u'<p>尊敬的用户，您的图书管理系统账号激活链接为:\
 				<a href="http://%s">%s</a> \
-			 ,请注意查收保管,验证链接有效时间为1小时, 请在有效期内点击链接验证您的邮箱。\
+			 ,请注意查收保管,验证链接有效时间为1小时, 请在有效期内点击链接激活您的邮箱。\
 			 如非本人操作，请勿点击该链接!</p>' %(url, url)
 		msg = EmailMultiAlternatives(subject,text_content,from_email,[to_email])
 		msg.attach_alternative(html_content, 'text/html')
