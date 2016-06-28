@@ -129,13 +129,13 @@ def allFreeBook(request):
 
 def allFine(request):
 	try:
-		# data = data = json.loads(request.body)
-		# token = Token()
-		# token = Token.objects.filter(token=data['token']).first()
-		# user = User()
-		# user = token.user
-		# if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
-		# 	raise myError('对不起,您没有该权限!')
+		data = data = json.loads(request.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
+			raise myError('对不起,您没有该权限!')
 		fineUsers = FineInfo.objects.all()
 		fineUserIDList = []
 		for fineUser in fineUsers:
@@ -203,13 +203,24 @@ def allLost(request):
 		losts = LostBook.objects.all()
 		lostList = []
 		for lost in losts:
+			if not lost.book.BookClass:
+				bookClass = None
+			else:
+				bookClass = lost.book.BookClass.ClassName
 			lostList.append({
 				'book_id': lost.book.BookID,
 				'book_name': lost.book.BookName,
 				'user_id': lost.reader.UserID,
 				'pay_money': lost.PayMoney,
 				'pay_date': str(lost.OperateDate),
-				'admin_id': lost.admin.UserID
+				'admin_id': lost.admin.UserID,
+				'book_writer': lost.book.BookWriter,
+				'book_publish': lost.book.BookPublish,
+				'book_price': lost.book.BookPrice,
+				'book_date': noneIfEmptyString(str(lost.book.BookDate)),
+				'book_class': noneIfEmptyString(bookClass),
+				'book_main': noneIfEmptyString(lost.book.BookMain),
+				'book_prim': noneIfEmptyString(lost.book.BookPrim),
 				})
 		result = {
 			'successful': True,
@@ -242,6 +253,10 @@ def allBorrow(request):
 		borrows = BorrowInfo.objects.all()
 		borrowList = []
 		for borrow in borrows:
+			if not borrow.book.BookClass:
+				bookClass = None
+			else:
+				bookClass = borrow.book.BookClass.ClassName
 			borrowList.append({
 				'book_id': borrow.book.BookID,
 				'book_name': borrow.book.BookName,
@@ -249,6 +264,14 @@ def allBorrow(request):
 				'borrow_time': str(borrow.BorrowTime),
 				'back_time': str(borrow.BackTime),
 				'renew_state': borrow.RenewState,
+				'book_no': borrow.book.BookNo,
+				'book_writer': borrow.book.BookWriter,
+				'book_publish': borrow.book.BookPublish,
+				'book_price': borrow.book.BookPrice,
+				'book_date': noneIfEmptyString(str(borrow.book.BookDate)),
+				'book_class': noneIfEmptyString(bookClass),
+				'book_main': noneIfEmptyString(borrow.book.BookMain),
+				'book_prim': noneIfEmptyString(borrow.book.BookPrim),
 				})
 		result = {
 			'successful': True,
