@@ -30,13 +30,6 @@ class myError(Exception):
 
 def allBook(request):
 	try:
-		data = json.loads(request.body)
-		token = Token()
-		token = Token.objects.filter(token=data['token']).first()
-		user = User()
-		user = token.user
-		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
-			raise myError('对不起,您没有该权限!')
 		books = Book.objects.all()
 		bookList = []
 		for book in books:
@@ -820,3 +813,7 @@ def deleteBookClass(request):
 		}
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
+
+# def updateBookClass(request):
+# 	try:
+		
