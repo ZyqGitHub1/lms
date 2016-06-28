@@ -108,19 +108,19 @@ $('#dataTables-example tbody').on(
 
 function showRefind(data) {
 	$("#refind_book_id").val(data.book_id);
-	$("#refind_user_id").val(data.user_id);
+	$("#refind_operate_date").val(data.pay_date);
     $("#refindModal").modal("show");
 }
 
 function dorefindbook() {
-    var url = '/bookManage/lostFine';
+    var url = '/bookManage/deleteLostBook';
     var post_data={
         token:loginobj.data.token,
         book:{
             'book_id':$("#refind_book_id").val()
         },
-        user:{
-        	'user_id':$("#refind_user_id").val()
+        date:{
+        	'operate_date':$("#refind_operate_date").val()
         }
     };
     request.post(url)

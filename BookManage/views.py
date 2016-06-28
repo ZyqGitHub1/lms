@@ -613,13 +613,57 @@ def lostFine(request):
 		UserID = borrowInfo.reader.UserID
 		lostBook.book = book
 		lostBook.reader = reader
-		lostBook.PayMoney = 50
+		lostBook.PayMoney = book.BookPrice * 2
 		lostBook.admin = user
 		user = User.objects.filter(UserID=UserID).first()
 		user.BorrowNumber -=1
 		borrowInfo.delete()
 		user.save()
 		lostBook.save()
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			}
+		}
+	except myError, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '1024',
+				'msg': e.value,
+			}
+		}
+	except Exception, e:
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			}
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def deleteLostBook(request):
+	try:
+		data = json.loads(request.body)
+		token = Token()
+		token = Token.objects.filter(token=data['token']).first()
+		user = User()
+		user = token.user
+		if (user.role.RoleName != '管理员'):
+			raise myError('对不起,您没有该权限!')
+		BookID = data['book']['book_id']
+		book = Book()
+		book = Book.objects.filter(BookID=BookID).first()
+		strDate = data['date']['operate_date']
+		OperateDate = datetime.datetime.strptime(strDate,'%Y-%m-%d')
+		print OperateDate
+		lostBook = LostBook()
+		lostBook = LostBook.objects.filter(book=book, OperateDate=OperateDate).first()
+		lostBook.delete()
 		result = {
 			'successful': True,
 			'error': {

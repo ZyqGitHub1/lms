@@ -122,6 +122,7 @@ function showBack(data) {
 
 function showLose(data) {
 	$("#lose_book_id").val(data.book_id);
+    $("#lose_book_name").val(data.book_name);
 	$("#lose_user_id").val(data.user_id);
     $("#loseModal").modal("show");
 }
