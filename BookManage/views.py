@@ -491,7 +491,7 @@ def borrowBook(request):
 			raise myError('该书已被借出!')
 		fine = FineInfo()
 		fine = FineInfo.objects.filter(reader=user).first()
-		if fine:
+		if fine and not fine.PayState:
 			raise myError('该用户有罚款未缴纳,不能借书!')
 		if user.BorrowNumber > user.MaxBorrowNumber:
 			raise myError('该用户借书本数已达可借本书上限值!')
