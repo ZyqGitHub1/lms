@@ -656,10 +656,11 @@ def allBookClasses(request):
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		classList = []
-		bookClasses = BookClasses.objects.all()
-		for bookClass in BookClasses:
+		all_bookClasses = BookClasses.objects.all()
+		for bookClass in all_bookClasses:
 			classList.append({
-				'book_class': bookClass.ClassName
+				'book_class_name': bookClass.ClassName,
+				'book_class_id': bookClass.id
 				})
 		result = {
 			'successful': True,
@@ -687,7 +688,7 @@ def allBookClasses(request):
 		}
 	finally:
 		return HttpResponse(json.dumps(result), content_type='application/json')
-		
+
 def addBookClasses(request):
 	try:
 		data = json.loads(request.body)
@@ -701,7 +702,7 @@ def addBookClasses(request):
 		existClass = BookClasses.objects.filter(ClassName=ClassName).first()
 		if existClass:
 			raise myError('该图书类别已存在!')
-		booClass = BookClasses()
+		bookClass = BookClasses()
 		bookClass.ClassName = ClassName
 		bookClass.save()
 		result = {
@@ -740,15 +741,15 @@ def deleteBookClass(request):
 		if (user.role.RoleName != '管理员' and user.role.RoleName != '协管员'):
 			raise myError('对不起,您没有该权限!')
 		ClassName = data['book']['book_class']
-		books = Book()
-		books = Book.objects.filter(ClassName=ClassName)
-		for book in books:
-			book.ClassName = None
-		books.save()
 		bookClass = BookClasses()
 		bookClass = BookClasses.objects.filter(ClassName=ClassName).first()
 		if not bookClass:
 			raise myError('该图书类别不存在')
+		books = Book()
+		books = Book.objects.filter(BookClass=bookClass)
+		for book in books:
+			book.BookClass = None
+			books.save()
 		bookClass.delete()
 		result = {
 			'successful': True,

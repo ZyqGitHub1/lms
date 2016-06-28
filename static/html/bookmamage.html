@@ -87,7 +87,7 @@
                                     <a href="bookmamage.html">图书信息</a>
                                 </li>
                                 <li>
-                                    <a href="bookclass.html">图书类别</a>
+                                    <a href="class_manage.html">图书类别</a>
                                 </li>
                             </ul>
                         </li>
@@ -176,7 +176,10 @@
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">图书类型：</label>
-					                <input type="text" id="b_class" class="form-control">
+					                <!-- <input type="text" id="b_class" class="form-control"> -->
+                                    <select type="text" name="b_class" id="b_class" class="form-control">
+                                        <option value="">无</option>
+                                    </select>
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">是否可借：</label>
@@ -262,7 +265,9 @@
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">图书类型：</label>
-					                <input type="text" id="add_b_class" class="form-control">
+					                <select type="text" id="add_b_class" class="form-control">
+                                        <option value="">无</option>
+                                    </select>
 					            </div>
 					            <div class="control-group">
 					                <label class="control-label" for="inputNote">是否可借：</label>

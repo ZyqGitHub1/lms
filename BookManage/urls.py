@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^lostFine$', views.lostFine),
     url(r'^allBookClasses$', views.allBookClasses),
     url(r'^addBookClasses$', views.addBookClasses),
+    url(r'^deleteBookClasses$', views.deleteBookClass),
 ]

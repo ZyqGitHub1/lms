@@ -7,12 +7,12 @@ var _table = $table.dataTable($.extend(
     true,{},CONSTANT.DATA_TABLES.DEFAULT_OPTION, {
         //"data":TESTDATA.BOOKMANAGE,
         "ajax" : function(data, callback, settings) {//ajax配置为function,手动调用异步查询
-           var param = {
+            var param = {
                token:loginobj.data.token,
-           };
+            };
            $.ajax({
                type: "POST",
-               url: "/bookManage/allBook",
+               url: "/bookManage/allBookClasses",
                contentType: 'application/json',
                cache : false,  //禁用缓存
                data: toJSON(param),    //传入已封装的参数
@@ -45,28 +45,10 @@ var _table = $table.dataTable($.extend(
             ],
             columns: [
             {
-                "class":          'details-control',
-                "orderable":      false,
-                "data":           null,
-                "defaultContent": ''
+                data: "book_class_id",
             },
             {
-                data: "book_id",
-            },
-            {
-                data: "book_no",
-            },
-            {
-                data : "book_name",
-            },
-            {
-                data : "book_class",
-            },
-            {
-                data : "book_state",
-            },
-            {
-                data : "book_rno",
+                data: "book_class_name",
             },
             {
                 className : "td-operation",
@@ -89,124 +71,35 @@ var _table = $table.dataTable($.extend(
             $btnDel.on(
                 'click',
                 function () {
-                    showdeletebook(data);
+                    showdeleteclass(data);
                 }
             );
             console.log(data);
             //$('td', row).eq(7).empty();
-            $('td', row).eq(7).append($btnEdit).append("|").append($btnDel);
+            $('td', row).eq(2).append($btnEdit).append("|").append($btnDel);
         },
     })).api()
-$('#dataTables-example tbody').on(
-        'click', 'td.details-control',
-        function () {
-            var tr = $(this).closest('tr');
-            var row = _table.row( tr );
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                // Open this row
-                row.child( format(row.data()) ).show();
-                tr.addClass('shown');
-            }
-        }
-    );
 var $btnadd = $('<a href="#" aria-controls="dataTables-example" tabindex="0" data-toggle="modal" dtarget="#addBookModal" class="btn btn-default"><span>添加</span></a>');
 $btnadd.on(
     'click',
     function(){
-        showaddbook();
+        showaddclass();
     }
     )
 $("div.dt-buttons").append($btnadd);
-function showedit(data) {
-    $('#b_class').empty();
-    postclassdata={
-        token:loginobj.data.token,
-    };
-    request.post("/bookManage/allBookClasses")
-    .send(postclassdata)
-    .set('Accept', 'application/json')
-    .end(function(error,response){
-        if (error) {
-                alert("网络异常");
-            }
-            else if(!response.body.successful) {
-                alert(response.body.error.msg);
-            }
-            else{
-                var classdata = response.body.data;
-                //var p = $("#add_b_class");
-                console.log(classdata);
-                $.each(classdata, function(i,val){
-                    console.log(val.book_class_name);
-                    $("<option>"+ val.book_class_name +"</option>").appendTo('#b_class');
-                });
-                }
-    })
+function showclassedit(data) {
     $("#b_id").val(data.book_id);
     $("#b_state").val(data.book_state);
-    $("#b_price").val(data.book_price);
-    $("#b_name").val(data.book_name);
-    $("#b_index").val(data.book_no);
-    $("#b_class").val(data.book_class);
-    $("#b_pos").val(data.book_rno);
-    $("#b_auth").val(data.book_writer);
-    $("#b_addr").val(data.book_publish);
-    $("#b_date").val(data.book_date);
-    $("#b_main").val(data.book_main);
-    $("#b_prim").val(data.book_prim);
-    $("#bookModal").modal("show");
+    $("#classModal").modal("show");
 }
-function showaddbook() {
-    $('#add_b_class').empty();
-    postclassdata={
-        token:loginobj.data.token,
-    };
-    request.post("/bookManage/allBookClasses")
-    .send(postclassdata)
-    .set('Accept', 'application/json')
-    .end(function(error,response){
-        if (error) {
-                alert("网络异常");
-            }
-            else if(!response.body.successful) {
-                alert(response.body.error.msg);
-            }
-            else{
-                var classdata = response.body.data;
-                //var p = $("#add_b_class");
-                console.log(classdata);
-                $.each(classdata, function(i,val){
-                    console.log(val.book_class_name);
-                    $("<option>"+ val.book_class_name +"</option>").appendTo('#add_b_class');
-                });
-                }
-    })
-    $("#addBookModal").modal("show");
+function showaddclass() {
+    $("#addclassModal").modal("show");
 }
-var temp_book_id;
-function showdeletebook(data) {
-    //$("#b_id").val(data.book_id);
-    //$("#b_state").val(data.book_state);
-    //$("#b_price").val(data.book_price);
-    //$("#b_name").val(data.book_name);
-    //$("#b_index").val(data.book_name);
-    //$("#b_class").val(data.book_class);
-    //$("#b_pos").val(data.book_rno);
-    //$("#b_auth").val(data.book_writer);
-    //$("#b_addr").val(data.book_publish);
-    //$("#b_date").val(data.book_date);
-    //$("#b_main").val(data.book_main);
-    //$("#b_prim").val(data.book_prim);
-    $("#deleteModal").modal("show");
-    temp_book_id = data.book_id;
-
+function showdeleteclass(data) {
+    $("#delete_class_name").val(data.book_class_name);
+    $("#deleteclassModal").modal("show");
 }
-function doedit() {
+function doclassedit() {
     var url = '/bookManage/updateBook';
     var post_data={
         token:loginobj.data.token,
@@ -242,23 +135,12 @@ function doedit() {
             }
     })
 }
-function doeaddbook() {
-    var url = '/bookManage/addBook';
+function doaddclass() {
+    var url = '/bookManage/addBookClasses';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':$("#add_b_id").val(),
-            'book_no':$("#add_b_index").val(),
-            'book_name':$("#add_b_name").val(),
-            'book_writer':$("#add_b_auth").val(),
-            'book_publish':$("#add_b_addr").val(),
-            'book_price':$("#add_b_price").val(),
-            'book_date':$("#add_b_date").val(),
-            'book_class':$("#add_b_class").val(),
-            'book_main':$("#add_b_main").val(),
-            'book_prim':$("#add_b_prim").val(),
-            'book_state':$("#add_b_state").val(),
-            'book_rno':$("#add_b_pos").val()
+            'book_class':$("#add_class_name").val(),
         }
     };
     request.post(url)
@@ -274,16 +156,16 @@ function doeaddbook() {
             else{
                 alert("添加成功");
                 _table.ajax.reload();
-                $("#addBookModal").modal('toggle');
+                $("#addclassModal").modal('toggle');
             }
     })
 }
-function dodeltetbook() {
-    var url = '/bookManage/deleteBook';
+function dodeltetclass() {
+    var url = '/bookManage/deleteBookClasses';
     var post_data={
         token:loginobj.data.token,
         book:{
-            'book_id':temp_book_id,
+            'book_class':$("#delete_class_name").val(),
         }
     };
     request.post(url)
@@ -299,7 +181,7 @@ function dodeltetbook() {
             else{
                 alert("删除成功");
                 _table.ajax.reload();
-                $("#deleteModal").modal('toggle');
+                $("#deleteclassModal").modal('toggle');
             }
     })
 }
