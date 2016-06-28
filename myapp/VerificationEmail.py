@@ -10,7 +10,10 @@ def send_verificationEmail(to_email):
 		from_email = 'ch940068139@126.com'
 		subject = '图书管理系统'
 		to_email = to_email
-		value = {'confirm': code}
+		value = {
+			'confirm': code,
+			'email':to_email
+			}
 		data = urlencode(value)
 		url = 'localhost:8000/myapp/user/confirm' + '?' + data
 		text_content = "这是一封很重要的邮件!"
