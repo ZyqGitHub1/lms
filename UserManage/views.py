@@ -175,11 +175,11 @@ def updateUserInfo(request):
 			user.role = role
 		if 'max_borrow' in data['user']:
 			user.MaxBorrow = data['user']['user_maxborrow']
-		if 'phone' in data['user']:
+		if 'user_phone' in data['user']:
 			user.UserPhone = data['user']['user_phone']
-		if 'addr' in data['user']:
+		if 'user_addr' in data['user']:
 			user.UserAddr = data['user']['user_addr']
-		if 'fine' in data['user']:
+		if 'user_fine' in data['user']:
 			user.Fine = data['user']['user_fine']
 		if 'total_borrow' in data['user']:
 			user.TotalBorrow = data['user']['user_totalborrow']
