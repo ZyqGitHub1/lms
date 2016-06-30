@@ -15,7 +15,7 @@ $('#logout').click(function(){
 		} else if(!response.body.successful) {
 			alert(response.body.error.msg);
 		} else {
-			window.location.href = "../index.html";
+			window.location.href = "../static/index.html";
 		}
 	});
 })
