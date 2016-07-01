@@ -103,14 +103,31 @@ def confirm(request):
 
 def reconfirm(request):
 	try:
-		request.GET.get('email')
+		data = json.loads(request.body)
+		print data
+		token = Token.objects.filter(token=data['token']).first()
+		print token
+		user = token.user
+		email = user.email
+		print email
 		send_verificationEmail(email)
-		return render(request, 'trans.html',
-				{
-					'confirm_msg': '一封新的确认邮件已经发送至您的邮箱'
-				})
+		result = {
+			'successful': True,
+			'error': {
+				'id': '',
+				'msg': '',
+			},
+		}
 	except Exception, e:
-		print e.args
+		result = {
+			'successful': False,
+			'error': {
+				'id': '',
+				'msg': e.args,
+			},
+		}
+	finally:
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 def login(request):
 	try:

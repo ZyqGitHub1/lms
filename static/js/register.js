@@ -49,7 +49,7 @@ var resigerVue = new Vue({
 						alert(response.body.error.msg);
 					}
 					else{
-						alert('注册成功');
+						alert('注册成功,请前去邮箱激活账号');
 					}
 				});
     	}

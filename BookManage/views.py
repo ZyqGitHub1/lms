@@ -420,6 +420,8 @@ def updateBook(request):
 			book.BookPublish = data['book']['book_publish']
 		if 'book_price' in data['book']:
 			book.BookPrice = data['book']['book_price']
+		if 'book_date' in data['book']:
+			book.BookDate = data['book']['book_date']
 		if 'book_state' in data['book']:
 			book.BookState = bool(data['book']['book_state'])
 		if 'book_rno' in data['book']:
